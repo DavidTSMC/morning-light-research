@@ -2,6 +2,8 @@ import yfinance as yf
 from pathlib import Path
 
 
+
+
 def download_stock(symbol="2330.TW", period="1y"):
     print(f"Downloading {symbol} ...")
 

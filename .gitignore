@@ -1,0 +1,9 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Downloaded data
+data/raw/*.csv
+
+# macOS
+.DS_Store
