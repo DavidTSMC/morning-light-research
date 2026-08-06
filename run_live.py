@@ -19,6 +19,9 @@ WR_TRIGGER_LEVEL = -80.0
 
 PSY_PERIODS = (12, 24)
 
+KDJ_PERIOD = 9
+KDJ_SMOOTHING = 3
+
 
 def flatten_columns(data: pd.DataFrame) -> pd.DataFrame:
     """Flatten yfinance MultiIndex columns for one ticker."""
@@ -31,7 +34,7 @@ def flatten_columns(data: pd.DataFrame) -> pd.DataFrame:
 
 
 def fetch_previous_close(ticker: str) -> float | None:
-    """Fetch the most recent completed daily close before today."""
+    """Fetch the most recent completed daily close."""
 
     daily = yf.download(
         ticker,
@@ -51,12 +54,11 @@ def fetch_previous_close(ticker: str) -> float | None:
     if len(daily) < 2:
         return None
 
-    # The latest daily row may be today's unfinished session.
     return float(daily.iloc[-2]["Close"])
 
 
 def calculate_quote_age(latest_time: pd.Timestamp) -> float:
-    """Return quote age in minutes."""
+    """Calculate quote age in minutes."""
 
     latest_time = pd.Timestamp(latest_time)
 
@@ -95,6 +97,24 @@ def classify_freshness(
     )
 
 
+def get_direction(
+    current_value: float,
+    previous_value: float,
+    tolerance: float = 0.01,
+) -> str:
+    """Return direction arrow."""
+
+    change = current_value - previous_value
+
+    if change > tolerance:
+        return "↑"
+
+    if change < -tolerance:
+        return "↓"
+
+    return "→"
+
+
 # ============================================================
 # WR ENGINE
 # ============================================================
@@ -103,14 +123,7 @@ def calculate_wr(
     data: pd.DataFrame,
     period: int = WR_PERIOD,
 ) -> pd.Series:
-    """
-    Calculate Williams %R.
-
-    WR = -100 × (Highest High - Close)
-                / (Highest High - Lowest Low)
-
-    Range: 0 to -100
-    """
+    """Calculate Williams %R."""
 
     highest_high = data["High"].rolling(
         window=period,
@@ -128,26 +141,20 @@ def calculate_wr(
         highest_high - data["Close"]
     ) / price_range
 
-    # Avoid division by zero when all prices are identical.
-    wr = wr.where(price_range != 0)
-
-    return wr
+    return wr.where(price_range != 0)
 
 
 def classify_wr(
     current_wr: float,
     previous_wr: float,
 ) -> dict:
-    """Interpret the latest WR5 movement."""
+    """Interpret WR5 movement."""
 
     change = current_wr - previous_wr
-
-    if change > 0.01:
-        direction = "↑"
-    elif change < -0.01:
-        direction = "↓"
-    else:
-        direction = "→"
+    direction = get_direction(
+        current_wr,
+        previous_wr,
+    )
 
     crossed_trigger = (
         previous_wr <= WR_TRIGGER_LEVEL
@@ -160,11 +167,11 @@ def classify_wr(
 
     elif current_wr <= WR_TRIGGER_LEVEL and change > 0:
         status = "🟡 RECOVERING"
-        explanation = "Oversold area is improving"
+        explanation = "Oversold zone is improving"
 
     elif current_wr <= WR_TRIGGER_LEVEL:
         status = "🔴 OVERSOLD"
-        explanation = "Still below the -80 trigger level"
+        explanation = "WR5 remains below -80"
 
     else:
         status = "⚪ NEUTRAL"
@@ -182,7 +189,6 @@ def classify_wr(
         "direction": direction,
         "status": status,
         "explanation": explanation,
-        "trigger": WR_TRIGGER_LEVEL,
         "distance": distance,
         "crossed_trigger": crossed_trigger,
     }
@@ -191,10 +197,7 @@ def classify_wr(
 def build_wr_snapshot(
     intraday: pd.DataFrame,
 ) -> dict | None:
-    """Build latest and previous WR5 observations."""
-
-    if len(intraday) < WR_PERIOD + 1:
-        return None
+    """Build the latest WR5 observation."""
 
     wr_series = calculate_wr(
         intraday,
@@ -204,12 +207,9 @@ def build_wr_snapshot(
     if len(wr_series) < 2:
         return None
 
-    previous_wr = float(wr_series.iloc[-2])
-    current_wr = float(wr_series.iloc[-1])
-
     return classify_wr(
-        current_wr=current_wr,
-        previous_wr=previous_wr,
+        current_wr=float(wr_series.iloc[-1]),
+        previous_wr=float(wr_series.iloc[-2]),
     )
 
 
@@ -221,90 +221,19 @@ def calculate_psy(
     close: pd.Series,
     period: int,
 ) -> pd.Series:
-    """
-    Calculate Psychological Line (PSY).
-
-    One rising observation occurs when:
-        current close > previous close
-
-    PSY = rising observations / period × 100
-    """
-
-    price_change = close.diff()
+    """Calculate Psychological Line."""
 
     rising = (
-        price_change > 0
+        close.diff() > 0
     ).astype(float)
 
-    psy = rising.rolling(
-        window=period,
-        min_periods=period,
-    ).sum() / period * 100
-
-    return psy
-
-
-def get_direction(
-    current_value: float,
-    previous_value: float,
-    tolerance: float = 0.01,
-) -> str:
-    """Return a simple direction symbol."""
-
-    change = current_value - previous_value
-
-    if change > tolerance:
-        return "↑"
-
-    if change < -tolerance:
-        return "↓"
-
-    return "→"
-
-
-def classify_psy(
-    current_value: float,
-    previous_value: float,
-) -> tuple[str, str]:
-    """
-    Give PSY a preliminary descriptive zone.
-
-    These labels are informational only.
-    Reality Check comes before trigger-rule adoption.
-    """
-
-    direction = get_direction(
-        current_value,
-        previous_value,
-    )
-
-    if current_value <= 25:
-        if direction == "↑":
-            return (
-                "🟡 LOW — RECOVERING",
-                "Low participation is beginning to improve",
-            )
-
-        return (
-            "🔴 LOW",
-            "Few recent bars closed higher",
-        )
-
-    if current_value >= 75:
-        if direction == "↓":
-            return (
-                "🟡 HIGH — COOLING",
-                "High participation is beginning to weaken",
-            )
-
-        return (
-            "🔴 HIGH",
-            "Many recent bars closed higher",
-        )
-
     return (
-        "⚪ NEUTRAL",
-        "PSY is inside the middle range",
+        rising.rolling(
+            window=period,
+            min_periods=period,
+        ).sum()
+        / period
+        * 100
     )
 
 
@@ -312,15 +241,14 @@ def build_one_psy_snapshot(
     close: pd.Series,
     period: int,
 ) -> dict | None:
-    """Build one PSY-period result."""
+    """Build one PSY-period observation."""
 
-    # N comparisons require at least N + 1 closing prices.
     if len(close) < period + 1:
         return None
 
     psy_series = calculate_psy(
-        close=close,
-        period=period,
+        close,
+        period,
     ).dropna()
 
     if len(psy_series) < 2:
@@ -334,31 +262,40 @@ def build_one_psy_snapshot(
         psy_series.iloc[-1]
     )
 
-    change = current_value - previous_value
-
     direction = get_direction(
         current_value,
         previous_value,
-    )
-
-    status, explanation = classify_psy(
-        current_value=current_value,
-        previous_value=previous_value,
     )
 
     rising_count = int(
         round(current_value * period / 100)
     )
 
+    if current_value <= 25:
+        status = (
+            "🟡 LOW — RECOVERING"
+            if direction == "↑"
+            else "🔴 LOW"
+        )
+
+    elif current_value >= 75:
+        status = (
+            "🟡 HIGH — COOLING"
+            if direction == "↓"
+            else "🔴 HIGH"
+        )
+
+    else:
+        status = "⚪ NEUTRAL"
+
     return {
         "period": period,
         "previous": previous_value,
         "current": current_value,
-        "change": change,
+        "change": current_value - previous_value,
         "direction": direction,
         "rising_count": rising_count,
         "status": status,
-        "explanation": explanation,
     }
 
 
@@ -369,15 +306,237 @@ def build_psy_snapshot(
 
     close = intraday["Close"].dropna()
 
-    results = {}
-
-    for period in PSY_PERIODS:
-        results[period] = build_one_psy_snapshot(
-            close=close,
-            period=period,
+    return {
+        period: build_one_psy_snapshot(
+            close,
+            period,
         )
+        for period in PSY_PERIODS
+    }
 
-    return results
+
+# ============================================================
+# J / KDJ ENGINE
+# ============================================================
+
+def calculate_kdj(
+    data: pd.DataFrame,
+    period: int = KDJ_PERIOD,
+    smoothing: int = KDJ_SMOOTHING,
+) -> pd.DataFrame:
+    """
+    Calculate standard KDJ.
+
+    RSV = (Close - Lowest Low)
+          / (Highest High - Lowest Low) × 100
+
+    K = previous K × 2/3 + RSV × 1/3
+    D = previous D × 2/3 + K × 1/3
+    J = 3K - 2D
+
+    Initial K and D are set to 50.
+    """
+
+    lowest_low = data["Low"].rolling(
+        window=period,
+        min_periods=period,
+    ).min()
+
+    highest_high = data["High"].rolling(
+        window=period,
+        min_periods=period,
+    ).max()
+
+    price_range = highest_high - lowest_low
+
+    rsv = (
+        (data["Close"] - lowest_low)
+        / price_range
+        * 100
+    )
+
+    rsv = rsv.where(price_range != 0)
+    rsv = rsv.fillna(50.0)
+
+    alpha = 1 / smoothing
+
+    k = rsv.ewm(
+        alpha=alpha,
+        adjust=False,
+    ).mean()
+
+    d = k.ewm(
+        alpha=alpha,
+        adjust=False,
+    ).mean()
+
+    j = 3 * k - 2 * d
+
+    return pd.DataFrame(
+        {
+            "K": k,
+            "D": d,
+            "J": j,
+        },
+        index=data.index,
+    )
+
+
+def classify_j(
+    current_j: float,
+    previous_j: float,
+) -> dict:
+    """Interpret the latest J movement."""
+
+    change = current_j - previous_j
+
+    direction = get_direction(
+        current_j,
+        previous_j,
+    )
+
+    v_turn = (
+        current_j > previous_j
+    )
+
+    crossed_zero = (
+        previous_j <= 0
+        and current_j > 0
+    )
+
+    crossed_30 = (
+        previous_j <= 30
+        and current_j > 30
+    )
+
+    if crossed_zero:
+        status = "🟢 EXTREME V-TURN"
+        explanation = "J crossed upward through 0"
+
+    elif crossed_30:
+        status = "🟢 RECOVERY TRIGGER"
+        explanation = "J crossed upward through 30"
+
+    elif current_j < 0 and v_turn:
+        status = "🟡 EXTREME — RECOVERING"
+        explanation = "J remains below 0 but is turning upward"
+
+    elif current_j < 0:
+        status = "🔴 EXTREME LOW"
+        explanation = "J remains below 0"
+
+    elif current_j <= 30 and v_turn:
+        status = "🟡 LOW — RECOVERING"
+        explanation = "J is below 30 and turning upward"
+
+    elif current_j <= 30:
+        status = "🟠 LOW"
+        explanation = "J remains in the low zone"
+
+    elif current_j >= 100:
+        status = "🔴 EXTREME HIGH"
+        explanation = "J is above 100"
+
+    else:
+        status = "⚪ NEUTRAL"
+        explanation = "J is in the middle range"
+
+    return {
+        "previous": previous_j,
+        "current": current_j,
+        "change": change,
+        "direction": direction,
+        "status": status,
+        "explanation": explanation,
+        "v_turn": v_turn,
+        "crossed_zero": crossed_zero,
+        "crossed_30": crossed_30,
+    }
+
+
+def build_j_snapshot(
+    intraday: pd.DataFrame,
+) -> dict | None:
+    """Build latest K, D and J observations."""
+
+    kdj = calculate_kdj(
+        intraday,
+        period=KDJ_PERIOD,
+        smoothing=KDJ_SMOOTHING,
+    ).dropna()
+
+    if len(kdj) < 2:
+        return None
+
+    previous_row = kdj.iloc[-2]
+    current_row = kdj.iloc[-1]
+
+    result = classify_j(
+        current_j=float(current_row["J"]),
+        previous_j=float(previous_row["J"]),
+    )
+
+    result["k"] = float(current_row["K"])
+    result["d"] = float(current_row["D"])
+
+    return result
+
+
+# ============================================================
+# THREE-IN-ONE
+# ============================================================
+
+def build_three_in_one(
+    wr_snapshot: dict | None,
+    psy_snapshot: dict,
+    j_snapshot: dict | None,
+) -> dict:
+    """Build preliminary WR + PSY + J interaction status."""
+
+    wr_up = bool(
+        wr_snapshot
+        and wr_snapshot["direction"] == "↑"
+    )
+
+    psy12 = psy_snapshot.get(12)
+
+    psy_up = bool(
+        psy12
+        and psy12["direction"] == "↑"
+    )
+
+    j_up = bool(
+        j_snapshot
+        and j_snapshot["direction"] == "↑"
+    )
+
+    score = sum(
+        [
+            wr_up,
+            psy_up,
+            j_up,
+        ]
+    )
+
+    if score == 3:
+        status = "🟢 THREE-IN-ONE RESONANCE"
+
+    elif score == 2:
+        status = "🟡 TWO OF THREE ALIGNED"
+
+    elif score == 1:
+        status = "⚪ EARLY / ISOLATED MOVEMENT"
+
+    else:
+        status = "🔴 NO UPWARD ALIGNMENT"
+
+    return {
+        "wr_up": wr_up,
+        "psy_up": psy_up,
+        "j_up": j_up,
+        "score": score,
+        "status": status,
+    }
 
 
 # ============================================================
@@ -390,7 +549,7 @@ def empty_snapshot(
     freshness: str,
     safety_notice: str,
 ) -> dict:
-    """Return a consistent empty result."""
+    """Return a consistent empty snapshot."""
 
     return {
         "ticker": ticker,
@@ -407,16 +566,21 @@ def empty_snapshot(
         "safety_notice": safety_notice,
         "wr": None,
         "psy": {},
+        "j": None,
+        "three_in_one": None,
     }
 
 
-def fetch_live_snapshot(ticker: str) -> dict:
-    """Fetch one near-live snapshot with WR5 and PSY."""
+def fetch_live_snapshot(
+    ticker: str,
+) -> dict:
+    """Fetch near-live data with WR, PSY and J."""
 
     try:
+        # Five days provide enough warm-up history for K and D.
         intraday = yf.download(
             ticker,
-            period="1d",
+            period="5d",
             interval="5m",
             auto_adjust=False,
             progress=False,
@@ -425,10 +589,10 @@ def fetch_live_snapshot(ticker: str) -> dict:
 
         if intraday.empty:
             return empty_snapshot(
-                ticker=ticker,
-                status="NO DATA",
-                freshness="🔴 UNKNOWN",
-                safety_notice="No usable market data",
+                ticker,
+                "NO DATA",
+                "🔴 UNKNOWN",
+                "No usable market data",
             )
 
         intraday = flatten_columns(intraday)
@@ -458,7 +622,7 @@ def fetch_live_snapshot(ticker: str) -> dict:
 
         if intraday.empty:
             raise ValueError(
-                "Intraday price columns contain no valid values."
+                "No valid intraday prices"
             )
 
         latest_price = float(
@@ -472,10 +636,7 @@ def fetch_live_snapshot(ticker: str) -> dict:
         change = None
         change_pct = None
 
-        if (
-            previous_close is not None
-            and previous_close != 0
-        ):
+        if previous_close not in (None, 0):
             change = (
                 latest_price - previous_close
             )
@@ -484,14 +645,19 @@ def fetch_live_snapshot(ticker: str) -> dict:
                 change / previous_close * 100
             )
 
-        volume_shares = int(
-            intraday["Volume"].fillna(0).sum()
-        )
-
-        volume_lots = volume_shares / 1000
-
         latest_time = pd.Timestamp(
             intraday.index[-1]
+        )
+
+        # Sum volume only for the latest trading date.
+        latest_date = latest_time.date()
+
+        same_day = intraday[
+            intraday.index.date == latest_date
+        ]
+
+        volume_shares = int(
+            same_day["Volume"].fillna(0).sum()
         )
 
         quote_age = calculate_quote_age(
@@ -510,6 +676,16 @@ def fetch_live_snapshot(ticker: str) -> dict:
             intraday
         )
 
+        j_snapshot = build_j_snapshot(
+            intraday
+        )
+
+        three_in_one = build_three_in_one(
+            wr_snapshot,
+            psy_snapshot,
+            j_snapshot,
+        )
+
         return {
             "ticker": ticker,
             "status": "OK",
@@ -521,22 +697,22 @@ def fetch_live_snapshot(ticker: str) -> dict:
             "change": change,
             "change_pct": change_pct,
             "volume_shares": volume_shares,
-            "volume_lots": volume_lots,
+            "volume_lots": volume_shares / 1000,
             "quote_age": quote_age,
             "freshness": freshness,
             "safety_notice": safety_notice,
             "wr": wr_snapshot,
             "psy": psy_snapshot,
+            "j": j_snapshot,
+            "three_in_one": three_in_one,
         }
 
     except Exception as error:
         return empty_snapshot(
-            ticker=ticker,
-            status=f"ERROR: {error}",
-            freshness="🔴 ERROR",
-            safety_notice=(
-                "Snapshot could not be validated"
-            ),
+            ticker,
+            f"ERROR: {error}",
+            "🔴 ERROR",
+            "Snapshot could not be validated",
         )
 
 
@@ -545,139 +721,150 @@ def fetch_live_snapshot(ticker: str) -> dict:
 # ============================================================
 
 def print_wr(
-    wr_snapshot: dict | None,
+    snapshot: dict | None,
 ) -> None:
-    """Print live WR5 analysis."""
+    """Print WR5."""
 
-    print("\n📡 LIVE INDICATOR 1 — WR")
+    print("\n📡 INDICATOR 1 — W/R")
 
-    if wr_snapshot is None:
+    if snapshot is None:
         print("WR5             : NOT AVAILABLE")
-        print(
-            "Reason          : Insufficient valid "
-            "5-minute bars"
-        )
         return
-
-    print("Indicator       : Williams %R")
-    print("Timeframe       : 5-minute bars")
-    print(f"Period          : {WR_PERIOD}")
 
     print(
         f"WR5 Previous    : "
-        f"{wr_snapshot['previous']:.2f}"
+        f"{snapshot['previous']:.2f}"
     )
 
     print(
         f"WR5 Current     : "
-        f"{wr_snapshot['current']:.2f} "
-        f"{wr_snapshot['direction']}"
-    )
-
-    print(
-        f"WR5 Change      : "
-        f"{wr_snapshot['change']:+.2f}"
+        f"{snapshot['current']:.2f} "
+        f"{snapshot['direction']}"
     )
 
     print(
         f"WR5 Status      : "
-        f"{wr_snapshot['status']}"
-    )
-
-    print(
-        f"Next Trigger    : "
-        f"WR5 > {WR_TRIGGER_LEVEL:.0f}"
-    )
-
-    print(
-        f"Distance        : "
-        f"{wr_snapshot['distance']:.2f} pts"
-    )
-
-    print(
-        f"Explanation     : "
-        f"{wr_snapshot['explanation']}"
-    )
-
-
-def print_one_psy(
-    psy_snapshot: dict | None,
-    period: int,
-) -> None:
-    """Print one PSY-period result."""
-
-    label = f"PSY{period}"
-
-    if psy_snapshot is None:
-        print(f"{label:<16}: NOT AVAILABLE")
-        print(
-            f"{'Reason':<16}: Need at least "
-            f"{period + 1} valid closes"
-        )
-        return
-
-    print(
-        f"{label + ' Previous':<16}: "
-        f"{psy_snapshot['previous']:.2f}"
-    )
-
-    print(
-        f"{label + ' Current':<16}: "
-        f"{psy_snapshot['current']:.2f} "
-        f"{psy_snapshot['direction']}"
-    )
-
-    print(
-        f"{label + ' Change':<16}: "
-        f"{psy_snapshot['change']:+.2f}"
-    )
-
-    print(
-        f"{label + ' Rising':<16}: "
-        f"{psy_snapshot['rising_count']}"
-        f"/{period} bars"
-    )
-
-    print(
-        f"{label + ' Status':<16}: "
-        f"{psy_snapshot['status']}"
-    )
-
-    print(
-        f"{label + ' Note':<16}: "
-        f"{psy_snapshot['explanation']}"
+        f"{snapshot['status']}"
     )
 
 
 def print_psy(
-    psy_snapshots: dict,
+    snapshots: dict,
 ) -> None:
-    """Print PSY12 and PSY24 analysis."""
+    """Print PSY12 and PSY24."""
 
-    print("\n🧠 LIVE INDICATOR 2 — PSY")
-    print("Indicator       : Psychological Line")
-    print("Timeframe       : 5-minute bars")
-    print(
-        "Definition      : Rising closes / "
-        "period × 100"
-    )
+    print("\n🧠 INDICATOR 2 — PSY")
 
     for period in PSY_PERIODS:
-        print()
-        print_one_psy(
-            psy_snapshot=psy_snapshots.get(period),
-            period=period,
+        snapshot = snapshots.get(period)
+
+        if snapshot is None:
+            print(
+                f"PSY{period:<11}: NOT AVAILABLE"
+            )
+            continue
+
+        print(
+            f"PSY{period} Previous  : "
+            f"{snapshot['previous']:.2f}"
+        )
+
+        print(
+            f"PSY{period} Current   : "
+            f"{snapshot['current']:.2f} "
+            f"{snapshot['direction']}"
+        )
+
+        print(
+            f"PSY{period} Rising    : "
+            f"{snapshot['rising_count']}/{period}"
+        )
+
+        print(
+            f"PSY{period} Status    : "
+            f"{snapshot['status']}"
         )
 
 
-def print_snapshot(snapshot: dict) -> None:
-    """Print one complete live snapshot."""
+def print_j(
+    snapshot: dict | None,
+) -> None:
+    """Print J and supporting K/D values."""
 
-    print("-" * 70)
+    print("\n⚡ INDICATOR 3 — J")
+
+    if snapshot is None:
+        print("J               : NOT AVAILABLE")
+        return
+
+    print("KDJ Parameters  : 9, 3, 3")
 
     print(
-        f"Ticker          : "
-        f"{snapshot['ticker']}"
+        f"K Current       : "
+        f"{snapshot['k']:.2f}"
+    )
+
+    print(
+        f"D Current       : "
+        f"{snapshot['d']:.2f}"
+    )
+
+    print(
+        f"J Previous      : "
+        f"{snapshot['previous']:.2f}"
+    )
+
+    print(
+        f"J Current       : "
+        f"{snapshot['current']:.2f} "
+        f"{snapshot['direction']}"
+    )
+
+    print(
+        f"J Change        : "
+        f"{snapshot['change']:+.2f}"
+    )
+
+    print(
+        f"J Status        : "
+        f"{snapshot['status']}"
+    )
+
+    print(
+        f"J Explanation   : "
+        f"{snapshot['explanation']}"
+    )
+
+
+def print_three_in_one(
+    snapshot: dict | None,
+) -> None:
+    """Print preliminary three-in-one interaction."""
+
+    print("\n🌅 THREE-IN-ONE — W/R + PSY12 + J")
+
+    if snapshot is None:
+        print("Status          : NOT AVAILABLE")
+        return
+
+    print(
+        f"W/R Up          : "
+        f"{'YES' if snapshot['wr_up'] else 'NO'}"
+    )
+
+    print(
+        f"PSY12 Up        : "
+        f"{'YES' if snapshot['psy_up'] else 'NO'}"
+    )
+
+    print(
+        f"J Up            : "
+        f"{'YES' if snapshot['j_up'] else 'NO'}"
+    )
+
+    print(
+        f"Alignment       : "
+        f"{snapshot['score']}/3"
     )
 
     print(
@@ -685,10 +872,16 @@ def print_snapshot(snapshot: dict) -> None:
         f"{snapshot['status']}"
     )
 
-    print(
-        f"Latest Time     : "
-        f"{snapshot['time']}"
-    )
+
+def print_snapshot(
+    snapshot: dict,
+) -> None:
+    """Print one complete stock snapshot."""
+
+    print("-" * 72)
+    print(f"Ticker          : {snapshot['ticker']}")
+    print(f"Status          : {snapshot['status']}")
+    print(f"Latest Time     : {snapshot['time']}")
 
     if snapshot["price"] is not None:
         print(
@@ -703,14 +896,14 @@ def print_snapshot(snapshot: dict) -> None:
         )
 
     if snapshot["change_pct"] is not None:
-        direction = (
+        marker = (
             "🟢"
             if snapshot["change_pct"] >= 0
             else "🔴"
         )
 
         print(
-            f"Daily Change    : {direction} "
+            f"Daily Change    : {marker} "
             f"{snapshot['change']:+.2f} "
             f"({snapshot['change_pct']:+.2f}%)"
         )
@@ -744,13 +937,17 @@ def print_snapshot(snapshot: dict) -> None:
 
     print_wr(snapshot["wr"])
     print_psy(snapshot["psy"])
+    print_j(snapshot["j"])
+    print_three_in_one(
+        snapshot["three_in_one"]
+    )
 
 
 def main() -> None:
-    """Run one complete Morning Light live scan."""
+    """Run Morning Light Live v0.5."""
 
     print(
-        "\n🌅 MORNING LIGHT — LIVE PILOT v0.4"
+        "\n🌅 MORNING LIGHT — LIVE PILOT v0.5"
     )
 
     print(
@@ -759,12 +956,12 @@ def main() -> None:
     )
 
     print(
-        "Mode: Freshness Guard + "
-        "Live WR5 + Live PSY12/24"
+        "Mode: Live W/R + PSY + J "
+        "Three-in-One Candidate"
     )
 
     print(
-        "Indicator Timeframe: 5-minute bars"
+        "Timeframe: 5-minute bars"
     )
 
     snapshots = []
@@ -777,53 +974,35 @@ def main() -> None:
         snapshots.append(snapshot)
         print_snapshot(snapshot)
 
-    delayed_count = sum(
-        snapshot["freshness"] != "🟢 FRESH"
+    available_count = sum(
+        snapshot["three_in_one"] is not None
         for snapshot in snapshots
     )
 
-    wr_count = sum(
-        snapshot["wr"] is not None
+    full_alignment_count = sum(
+        bool(
+            snapshot["three_in_one"]
+            and snapshot["three_in_one"]["score"] == 3
+        )
         for snapshot in snapshots
     )
 
-    psy12_count = sum(
-        snapshot["psy"].get(12) is not None
-        for snapshot in snapshots
-    )
-
-    psy24_count = sum(
-        snapshot["psy"].get(24) is not None
-        for snapshot in snapshots
-    )
-
-    print("-" * 70)
-    print("🌅 LIVE INDICATOR SUMMARY")
+    print("-" * 72)
+    print("🌅 LIVE THREE-IN-ONE SUMMARY")
     print(f"Stocks scanned  : {len(snapshots)}")
-    print(f"WR5 calculated  : {wr_count}")
-    print(f"PSY12 calculated: {psy12_count}")
-    print(f"PSY24 calculated: {psy24_count}")
-
-    if delayed_count == 0:
-        print(
-            "Freshness Guard : "
-            "✅ All snapshots passed"
-        )
-    else:
-        print(
-            f"Freshness Guard : "
-            f"⚠️ {delayed_count} delayed, stale, "
-            "or unavailable"
-        )
-
-        print(
-            "Safety          : "
-            "Research use only — not for execution"
-        )
-
+    print(f"Results built   : {available_count}")
+    print(f"Full alignment  : {full_alignment_count}")
     print(
-        "✅ Live WR5 + PSY12/24 "
-        "Engine v0.4 completed."
+        "Validation      : J still requires "
+        "broker Reality Check"
+    )
+    print(
+        "Safety          : Research use only — "
+        "not for execution"
+    )
+    print(
+        "✅ Live W/R + PSY + J "
+        "Engine v0.5 completed."
     )
 
 
