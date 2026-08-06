@@ -7,6 +7,9 @@ from reports.evidence_matrix import (
     build_market_council,
     build_today_action,
     build_evidence_convergence,
+    build_trigger_package,
+
+
     build_elite_intelligence,
 )
 
@@ -41,6 +44,7 @@ for ticker in watch_list:
     market_council, market_overall = build_market_council()
     external_evidence, convergence_level = build_evidence_convergence()
     selected_signals, waiting_signals = build_elite_intelligence(council)
+    trigger_package = build_trigger_package()
 
 
     # Today's Action
@@ -83,6 +87,10 @@ elite_results.append({
     "today_action": today_action,
     "confidence_bonus": confidence_bonus,
     "action_bonus": action_bonus,
+    "selected_signals": list(selected_signals),
+    "waiting_signals": list(waiting_signals),
+
+
 }) 
 
 
@@ -159,16 +167,6 @@ for signal in waiting_signals:
 
 
 
-
-
-
-
-
-
-
-
-
-
 for item in external_evidence:
     print(item)
 
@@ -211,33 +209,60 @@ for rank, item in enumerate(elite_results, start=1):
         f"Action={item['today_action']}"
     )
 
-print("\n🌅 MORNING BRIEF")
-print("=" * 40)
 
-top = elite_results[0]
+# ==========================================
+# Top 3 Morning Brief
+# ==========================================
 
-print(f"\n🌍 Market")
+print("\n🌅 TOP 3 MORNING BRIEF")
+print("=" * 50)
+
+print("\n🌍 Market")
 print(market_overall)
 
-print(f"\n⭐ Today's Top Pick")
-print(top["ticker"])
+top_picks = elite_results[:3]
 
-print(f"\n🎯 Action")
-print(top["today_action"])
+medals = ["🥇", "🥈", "🥉"]
 
-print("\n💡 Why")
+for rank, stock in enumerate(top_picks, start=1):
 
-for signal in selected_signals:
-    print(signal)
+    medal = medals[rank - 1]
 
-print("\n⏳ Waiting")
+    print("\n" + "─" * 50)
+    print(f"{medal} #{rank}  {stock['ticker']}")
+    print(f"Score      : {stock['elite_score']}")
+    print(f"Confidence : {stock['confidence']}")
+    print(f"Action     : {stock['today_action']}")
 
-for signal in waiting_signals:
-    print(signal)
+    print("\n💡 Why Selected Today")
+
+    if stock["selected_signals"]:
+        for signal in stock["selected_signals"]:
+            print(signal)
+    else:
+        print("🟡 No confirmed green signal yet")
+
+    print("\n🎯 Next Green Signals")
+
+   
+    print("\n🎯 Trigger Radar")
+    print("-" * 35)
+
+
+for trigger in trigger_package:
+
+        print(f"\n🎯 {trigger['name']}")
+
+        print(f"Current   {trigger['current']}")
+
+        print(f"Target    > {trigger['target']}")
+
+        print(f"Distance  {trigger['distance']}")
 
 
 
 
+print("\n" + "=" * 50)
 
 
 

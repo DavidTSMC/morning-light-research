@@ -321,19 +321,29 @@ def build_elite_intelligence(council):
 
     return selected, waiting
 
+def build_trigger_package():
 
+    triggers = [
 
+        {
+            "name": "WR",
+            "current": -92,
+            "target": -80,
+            "distance": 12,
+            "status": "Waiting",
+        },
 
+        {
+            "name": "PSY",
+            "current": 28,
+            "target": 35,
+            "distance": 7,
+            "status": "Waiting",
+        },
 
+    ]
 
-
-
-
-
-
-
-
-
+    return triggers
 
 
 
