@@ -4,14 +4,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import yfinance as yf
-
+import sys
 
 # ============================================================
 # MORNING LIGHT — HISTORICAL BACKFILL v0.1
 # First validation target: 2330.TW
 # ============================================================
 
-TICKER = "2330.TW"
+TICKER = sys.argv[1].upper() if len(sys.argv) > 1 else "2330.TW"
 PERIOD = "5d"
 INTERVAL = "5m"
 
