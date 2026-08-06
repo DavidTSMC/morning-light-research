@@ -17,9 +17,11 @@ DELAYED_LIMIT_MINUTES = 30
 WR_PERIOD = 5
 WR_TRIGGER_LEVEL = -80.0
 
+PSY_PERIODS = (12, 24)
+
 
 def flatten_columns(data: pd.DataFrame) -> pd.DataFrame:
-    """Flatten yfinance MultiIndex columns for a single ticker."""
+    """Flatten yfinance MultiIndex columns for one ticker."""
 
     if isinstance(data.columns, pd.MultiIndex):
         data = data.copy()
@@ -49,7 +51,7 @@ def fetch_previous_close(ticker: str) -> float | None:
     if len(daily) < 2:
         return None
 
-    # The latest daily row may represent today's unfinished session.
+    # The latest daily row may be today's unfinished session.
     return float(daily.iloc[-2]["Close"])
 
 
@@ -93,6 +95,10 @@ def classify_freshness(
     )
 
 
+# ============================================================
+# WR ENGINE
+# ============================================================
+
 def calculate_wr(
     data: pd.DataFrame,
     period: int = WR_PERIOD,
@@ -100,12 +106,10 @@ def calculate_wr(
     """
     Calculate Williams %R.
 
-    Formula:
-        WR = -100 * (Highest High - Close)
-                    / (Highest High - Lowest Low)
+    WR = -100 × (Highest High - Close)
+                / (Highest High - Lowest Low)
 
-    Range:
-        0 to -100
+    Range: 0 to -100
     """
 
     highest_high = data["High"].rolling(
@@ -124,7 +128,7 @@ def calculate_wr(
         highest_high - data["Close"]
     ) / price_range
 
-    # A zero price range would cause division by zero.
+    # Avoid division by zero when all prices are identical.
     wr = wr.where(price_range != 0)
 
     return wr
@@ -189,9 +193,7 @@ def build_wr_snapshot(
 ) -> dict | None:
     """Build latest and previous WR5 observations."""
 
-    required_rows = WR_PERIOD + 1
-
-    if len(intraday) < required_rows:
+    if len(intraday) < WR_PERIOD + 1:
         return None
 
     wr_series = calculate_wr(
@@ -210,6 +212,177 @@ def build_wr_snapshot(
         previous_wr=previous_wr,
     )
 
+
+# ============================================================
+# PSY ENGINE
+# ============================================================
+
+def calculate_psy(
+    close: pd.Series,
+    period: int,
+) -> pd.Series:
+    """
+    Calculate Psychological Line (PSY).
+
+    One rising observation occurs when:
+        current close > previous close
+
+    PSY = rising observations / period × 100
+    """
+
+    price_change = close.diff()
+
+    rising = (
+        price_change > 0
+    ).astype(float)
+
+    psy = rising.rolling(
+        window=period,
+        min_periods=period,
+    ).sum() / period * 100
+
+    return psy
+
+
+def get_direction(
+    current_value: float,
+    previous_value: float,
+    tolerance: float = 0.01,
+) -> str:
+    """Return a simple direction symbol."""
+
+    change = current_value - previous_value
+
+    if change > tolerance:
+        return "↑"
+
+    if change < -tolerance:
+        return "↓"
+
+    return "→"
+
+
+def classify_psy(
+    current_value: float,
+    previous_value: float,
+) -> tuple[str, str]:
+    """
+    Give PSY a preliminary descriptive zone.
+
+    These labels are informational only.
+    Reality Check comes before trigger-rule adoption.
+    """
+
+    direction = get_direction(
+        current_value,
+        previous_value,
+    )
+
+    if current_value <= 25:
+        if direction == "↑":
+            return (
+                "🟡 LOW — RECOVERING",
+                "Low participation is beginning to improve",
+            )
+
+        return (
+            "🔴 LOW",
+            "Few recent bars closed higher",
+        )
+
+    if current_value >= 75:
+        if direction == "↓":
+            return (
+                "🟡 HIGH — COOLING",
+                "High participation is beginning to weaken",
+            )
+
+        return (
+            "🔴 HIGH",
+            "Many recent bars closed higher",
+        )
+
+    return (
+        "⚪ NEUTRAL",
+        "PSY is inside the middle range",
+    )
+
+
+def build_one_psy_snapshot(
+    close: pd.Series,
+    period: int,
+) -> dict | None:
+    """Build one PSY-period result."""
+
+    # N comparisons require at least N + 1 closing prices.
+    if len(close) < period + 1:
+        return None
+
+    psy_series = calculate_psy(
+        close=close,
+        period=period,
+    ).dropna()
+
+    if len(psy_series) < 2:
+        return None
+
+    previous_value = float(
+        psy_series.iloc[-2]
+    )
+
+    current_value = float(
+        psy_series.iloc[-1]
+    )
+
+    change = current_value - previous_value
+
+    direction = get_direction(
+        current_value,
+        previous_value,
+    )
+
+    status, explanation = classify_psy(
+        current_value=current_value,
+        previous_value=previous_value,
+    )
+
+    rising_count = int(
+        round(current_value * period / 100)
+    )
+
+    return {
+        "period": period,
+        "previous": previous_value,
+        "current": current_value,
+        "change": change,
+        "direction": direction,
+        "rising_count": rising_count,
+        "status": status,
+        "explanation": explanation,
+    }
+
+
+def build_psy_snapshot(
+    intraday: pd.DataFrame,
+) -> dict:
+    """Build PSY12 and PSY24 observations."""
+
+    close = intraday["Close"].dropna()
+
+    results = {}
+
+    for period in PSY_PERIODS:
+        results[period] = build_one_psy_snapshot(
+            close=close,
+            period=period,
+        )
+
+    return results
+
+
+# ============================================================
+# LIVE SNAPSHOT
+# ============================================================
 
 def empty_snapshot(
     ticker: str,
@@ -233,11 +406,12 @@ def empty_snapshot(
         "freshness": freshness,
         "safety_notice": safety_notice,
         "wr": None,
+        "psy": {},
     }
 
 
 def fetch_live_snapshot(ticker: str) -> dict:
-    """Fetch one near-live 5-minute snapshot with WR5."""
+    """Fetch one near-live snapshot with WR5 and PSY."""
 
     try:
         intraday = yf.download(
@@ -291,7 +465,9 @@ def fetch_live_snapshot(ticker: str) -> dict:
             intraday.iloc[-1]["Close"]
         )
 
-        previous_close = fetch_previous_close(ticker)
+        previous_close = fetch_previous_close(
+            ticker
+        )
 
         change = None
         change_pct = None
@@ -300,7 +476,10 @@ def fetch_live_snapshot(ticker: str) -> dict:
             previous_close is not None
             and previous_close != 0
         ):
-            change = latest_price - previous_close
+            change = (
+                latest_price - previous_close
+            )
+
             change_pct = (
                 change / previous_close * 100
             )
@@ -327,6 +506,10 @@ def fetch_live_snapshot(ticker: str) -> dict:
             intraday
         )
 
+        psy_snapshot = build_psy_snapshot(
+            intraday
+        )
+
         return {
             "ticker": ticker,
             "status": "OK",
@@ -343,6 +526,7 @@ def fetch_live_snapshot(ticker: str) -> dict:
             "freshness": freshness,
             "safety_notice": safety_notice,
             "wr": wr_snapshot,
+            "psy": psy_snapshot,
         }
 
     except Exception as error:
@@ -356,10 +540,16 @@ def fetch_live_snapshot(ticker: str) -> dict:
         )
 
 
-def print_wr(wr_snapshot: dict | None) -> None:
-    """Print the live WR5 analysis."""
+# ============================================================
+# TERMINAL OUTPUT
+# ============================================================
 
-    print("\n📡 LIVE TECHNICAL INDICATOR")
+def print_wr(
+    wr_snapshot: dict | None,
+) -> None:
+    """Print live WR5 analysis."""
+
+    print("\n📡 LIVE INDICATOR 1 — WR")
 
     if wr_snapshot is None:
         print("WR5             : NOT AVAILABLE")
@@ -410,10 +600,80 @@ def print_wr(wr_snapshot: dict | None) -> None:
     )
 
 
-def print_snapshot(snapshot: dict) -> None:
-    """Print one formatted market snapshot."""
+def print_one_psy(
+    psy_snapshot: dict | None,
+    period: int,
+) -> None:
+    """Print one PSY-period result."""
 
-    print("-" * 68)
+    label = f"PSY{period}"
+
+    if psy_snapshot is None:
+        print(f"{label:<16}: NOT AVAILABLE")
+        print(
+            f"{'Reason':<16}: Need at least "
+            f"{period + 1} valid closes"
+        )
+        return
+
+    print(
+        f"{label + ' Previous':<16}: "
+        f"{psy_snapshot['previous']:.2f}"
+    )
+
+    print(
+        f"{label + ' Current':<16}: "
+        f"{psy_snapshot['current']:.2f} "
+        f"{psy_snapshot['direction']}"
+    )
+
+    print(
+        f"{label + ' Change':<16}: "
+        f"{psy_snapshot['change']:+.2f}"
+    )
+
+    print(
+        f"{label + ' Rising':<16}: "
+        f"{psy_snapshot['rising_count']}"
+        f"/{period} bars"
+    )
+
+    print(
+        f"{label + ' Status':<16}: "
+        f"{psy_snapshot['status']}"
+    )
+
+    print(
+        f"{label + ' Note':<16}: "
+        f"{psy_snapshot['explanation']}"
+    )
+
+
+def print_psy(
+    psy_snapshots: dict,
+) -> None:
+    """Print PSY12 and PSY24 analysis."""
+
+    print("\n🧠 LIVE INDICATOR 2 — PSY")
+    print("Indicator       : Psychological Line")
+    print("Timeframe       : 5-minute bars")
+    print(
+        "Definition      : Rising closes / "
+        "period × 100"
+    )
+
+    for period in PSY_PERIODS:
+        print()
+        print_one_psy(
+            psy_snapshot=psy_snapshots.get(period),
+            period=period,
+        )
+
+
+def print_snapshot(snapshot: dict) -> None:
+    """Print one complete live snapshot."""
+
+    print("-" * 70)
 
     print(
         f"Ticker          : "
@@ -483,13 +743,14 @@ def print_snapshot(snapshot: dict) -> None:
     )
 
     print_wr(snapshot["wr"])
+    print_psy(snapshot["psy"])
 
 
 def main() -> None:
     """Run one complete Morning Light live scan."""
 
     print(
-        "\n🌅 MORNING LIGHT — LIVE PILOT v0.3"
+        "\n🌅 MORNING LIGHT — LIVE PILOT v0.4"
     )
 
     print(
@@ -498,19 +759,21 @@ def main() -> None:
     )
 
     print(
-        "Mode: Near-live snapshot "
-        "with Freshness Guard + Live WR5"
+        "Mode: Freshness Guard + "
+        "Live WR5 + Live PSY12/24"
     )
 
     print(
-        "WR Definition: 5 periods "
-        "on 5-minute bars"
+        "Indicator Timeframe: 5-minute bars"
     )
 
     snapshots = []
 
     for ticker in WATCH_LIST:
-        snapshot = fetch_live_snapshot(ticker)
+        snapshot = fetch_live_snapshot(
+            ticker
+        )
+
         snapshots.append(snapshot)
         print_snapshot(snapshot)
 
@@ -524,19 +787,22 @@ def main() -> None:
         for snapshot in snapshots
     )
 
-    triggered_count = sum(
-        bool(
-            snapshot["wr"]
-            and snapshot["wr"]["crossed_trigger"]
-        )
+    psy12_count = sum(
+        snapshot["psy"].get(12) is not None
         for snapshot in snapshots
     )
 
-    print("-" * 68)
-    print("🌅 LIVE WR5 SUMMARY")
+    psy24_count = sum(
+        snapshot["psy"].get(24) is not None
+        for snapshot in snapshots
+    )
+
+    print("-" * 70)
+    print("🌅 LIVE INDICATOR SUMMARY")
     print(f"Stocks scanned  : {len(snapshots)}")
     print(f"WR5 calculated  : {wr_count}")
-    print(f"WR5 triggered   : {triggered_count}")
+    print(f"PSY12 calculated: {psy12_count}")
+    print(f"PSY24 calculated: {psy24_count}")
 
     if delayed_count == 0:
         print(
@@ -556,7 +822,8 @@ def main() -> None:
         )
 
     print(
-        "✅ Live WR5 Engine v0.3 completed."
+        "✅ Live WR5 + PSY12/24 "
+        "Engine v0.4 completed."
     )
 
 
