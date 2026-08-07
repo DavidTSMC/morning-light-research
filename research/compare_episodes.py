@@ -54,6 +54,23 @@ episode = {
     "research_type": "intraday_reversal",
 }
 
+episode_E002 = {
+    "episode_id": "E002",
+    "ticker": "0050.TW",
+    "date": "2026-08-07",
+    "timeframe": "5m",
+    "start_time": "12:30",
+    "turning_zone_start": "12:40",
+    "turning_zone_end": "13:00",
+    "end_time": "13:30",
+    "research_type": "intraday_reversal",
+}
+
+# Select episode for current research run
+episode = episode_E002
+
+
+
 print()
 print("Episode loaded:")
 for key, value in episode.items():
@@ -88,6 +105,28 @@ evidence_rows = [
     ("13:30", 2370,   0, None, -38955, -36758, 2367.96),
 ]
 
+# ------------------------------------------------------------
+# E002 - 0050.TW - 2026-08-07 - 5-minute evidence
+# ------------------------------------------------------------
+
+evidence_rows_E002 = [
+    # time, close, MTM3, MTM10, OBV, OBV_MA3, BBI
+    ("12:30", 102.60,  0.00, -0.03, -367848, -367959, 102.62),
+    ("12:35", 102.60,  0.10, -0.04, -367848, -367848, 102.63),
+    ("12:40", 102.45, -0.15, -0.05, -368582, -368093, 102.60),
+    ("12:45", 102.25, -0.35, -0.07, -370237, -368889, 102.54),
+    ("12:50", 102.30, -0.30, -0.08, -369709, -369509, 102.48),
+    ("12:55", 102.15, -0.30, -0.09, -371628, -370525, 102.42),
+    ("13:00", 102.35,  0.10, -0.08, -370913, -370750, 102.40),
+    ("13:05", 102.80,  0.50, -0.04, -370091, -370877, 102.46),
+    ("13:10", 102.75,  0.15,  0.15, -369589, -369864, 102.52),
+    ("13:15", 102.70, -0.10,  0.10, -369866, -369849, 102.58),
+    ("13:20", 102.75, -0.05,  0.30, -369489, -369648, 102.63),
+    ("13:25", 102.75, -0.05,  0.45, -368708, -369354, 102.68),
+    ("13:30", 102.85,  0.05,  0.50, -367022, -368406, 102.73),
+
+]
+
 
 columns = [
     "time",
@@ -99,7 +138,35 @@ columns = [
     "BBI",
 ]
 
-evidence = pd.DataFrame(evidence_rows, columns=columns)
+
+
+# ============================================================
+# Select evidence rows by episode
+# ============================================================
+
+if episode["episode_id"] == "E001":
+    selected_rows = evidence_rows
+elif episode["episode_id"] == "E002":
+    selected_rows = evidence_rows_E002
+else:
+    raise ValueError(
+        f"Unknown episode_id: {episode['episode_id']}"
+    )
+
+evidence = pd.DataFrame(selected_rows, columns=columns)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # ------------------------------------------------------------
@@ -129,12 +196,6 @@ evidence.insert(3, "timeframe", episode["timeframe"])
 
 
 
-
-
-
-
-
-
 # ------------------------------------------------------------
 # Save descriptive evidence
 # ------------------------------------------------------------
@@ -142,7 +203,7 @@ evidence.insert(3, "timeframe", episode["timeframe"])
 report_folder = Path("reports")
 report_folder.mkdir(exist_ok=True)
 
-output_file = report_folder / "episode_E001_evidence.csv"
+output_file = report_folder / f'episode_{episode["episode_id"]}_evidence.csv'
 
 evidence.to_csv(
     output_file,
@@ -151,9 +212,10 @@ evidence.to_csv(
 )
 
 
+
 print()
 print("=" * 72)
-print("E001 — EPISODE EVIDENCE TABLE")
+print(f'{episode["episode_id"]} - EPISODE EVIDENCE TABLE')
 print("=" * 72)
 print(evidence.to_string(index=False))
 
@@ -217,8 +279,6 @@ def first_positive_after_negative_or_zero_bridge(df, column):
 
 
 
-
-
 def first_obv_above_ma3_after_below(df):
     """
     Find the first bar where OBV moves above OBV_MA3
@@ -273,10 +333,21 @@ bbi_turn = first_bbi_upturn(evidence)
 
 print()
 print("=" * 72)
-print("E001 — FIRST DESCRIPTIVE TIMING EVENTS")
+print(f'{episode["episode_id"]} - FIRST DESCRIPTIVE TIMING EVENTS')
 print("=" * 72)
 
-print(f"Turning zone       : 12:45 -> 13:00")
+
+print(
+    f'Turning zone      : {episode["turning_zone_start"]} -> '
+    f'{episode["turning_zone_end"]}'
+)
+
+
+
+
+
+
+
 print(f"MTM3 first > 0     : {mtm3_cross}")
 print(f"MTM3 zero-bridge   : {mtm3_zero_bridge}")
 print(f"MTM10 first > 0    : {mtm10_cross}")
