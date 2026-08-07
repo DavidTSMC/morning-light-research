@@ -11,6 +11,9 @@ No trading decision.
 """
 
 import pandas as pd
+from pathlib import Path
+import matplotlib.pyplot as plt
+
 
 
 print("=" * 72)
@@ -20,7 +23,7 @@ print("Evidence First | Descriptive Comparison Only")
 print("=" * 72)
 
 
-from pathlib import Path
+
 
 REPORTS_DIR = Path("reports")
 
@@ -207,3 +210,277 @@ print("Negative = before T0 | Positive = after T0")
 print("=" * 72)
 
 print(summary.to_string(index=False))
+
+# ============================================================
+# PLOT v0.21 - Overlap Expanded + Episode Labels
+# ============================================================
+
+plot_df = matrix.dropna(subset=["delta_t_min"]).copy()
+
+# Event display order (bottom -> top)
+event_order = [
+    "OBV > OBV_MA3",
+    "MTM3 zero-bridge",
+    "BBI first upturn",
+    "MTM10 first > 0",
+]
+
+event_to_y = {event: i for i, event in enumerate(event_order)}
+plot_df["y"] = plot_df["event"].map(event_to_y)
+
+# ------------------------------------------------------------
+# Expand overlapping points
+# If same event + same delta_t_min has multiple episodes,
+# spread them slightly on x-axis so they can be seen separately.
+# ------------------------------------------------------------
+def symmetric_offsets(n, step=0.35):
+    if n == 1:
+        return [0.0]
+    if n == 2:
+        return [-step, step]
+    if n == 3:
+        return [-step, 0.0, step]
+
+    center = (n - 1) / 2
+    return [(i - center) * step for i in range(n)]
+
+plot_df["plot_x"] = plot_df["delta_t_min"].astype(float)
+
+for (event, delta), group in plot_df.groupby(["event", "delta_t_min"]):
+    idxs = group.sort_values("episode_id").index.tolist()
+    offsets = symmetric_offsets(len(idxs), step=0.35)
+    for idx, off in zip(idxs, offsets):
+        plot_df.loc[idx, "plot_x"] = plot_df.loc[idx, "delta_t_min"] + off
+
+# ------------------------------------------------------------
+# Plot
+# ------------------------------------------------------------
+fig, ax = plt.subplots(figsize=(12, 6.5))
+
+episode_ids = sorted(plot_df["episode_id"].unique())
+
+for episode_id in episode_ids:
+    sub = plot_df[plot_df["episode_id"] == episode_id]
+
+    ax.scatter(
+        sub["plot_x"],
+        sub["y"],
+        s=110,
+        label=episode_id,
+        alpha=0.95,
+    )
+
+   # Episode label next to each point
+# Labels on overlap-expanded points are placed outward
+# so that they do not collide with each other.
+for _, row in sub.iterrows():
+
+    if row["plot_x"] < row["delta_t_min"]:
+        # Point was shifted left: place label above-left
+        label_offset = (-7, 8)
+        horizontal_alignment = "right"
+
+    elif row["plot_x"] > row["delta_t_min"]:
+        # Point was shifted right: place label below-right
+        label_offset = (7, -9)
+        horizontal_alignment = "left"
+
+    else:
+        # Non-overlapping point: place label above-right
+        label_offset = (7, 8)
+        horizontal_alignment = "left"
+
+    ax.annotate(
+        row["episode_id"],
+        xy=(row["plot_x"], row["y"]),
+        xytext=label_offset,
+        textcoords="offset points",
+        fontsize=9,
+        ha=horizontal_alignment,
+        va="center",
+    )
+
+
+
+# T0 vertical line
+ax.axvline(0, linestyle="--", linewidth=2)
+
+# Axes / labels
+ax.set_yticks(range(len(event_order)))
+ax.set_yticklabels(event_order)
+ax.set_xlabel("Delta Time from T0 (minutes)    <-- Earlier | Later -->")
+ax.set_ylabel("Observed Event")
+ax.set_title(
+    "Morning Light Cross-Episode Timing Map v0.21\n"
+    "Overlap Expanded + Episode Labels\n"
+    "T0 = Turning Zone End"
+)
+
+ax.grid(True, linestyle=":", alpha=0.5)
+ax.legend(title="Episode")
+
+# ------------------------------------------------------------
+# Save PNG
+# ------------------------------------------------------------
+output_png = REPORTS_DIR / "cross_episode_timing_map_v021.png"
+plt.tight_layout()
+plt.savefig(output_png, dpi=150, bbox_inches="tight")
+
+print()
+print("=" * 72)
+print("PNG exported successfully")
+print(f"Saved to : {output_png}")
+print("=" * 72)
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ============================================================
+# CROSS-EPISODE TIMING MAP v0.2
+# Evidence First | Raw Timing Visualization
+# ============================================================
+
+import matplotlib.pyplot as plt
+
+plot_data = matrix.dropna(subset=["delta_t_min"]).copy()
+
+event_order = [
+    "OBV > OBV_MA3",
+    "MTM3 zero-bridge",
+    "BBI first upturn",
+    "MTM10 first > 0",
+]
+
+episode_ids = plot_data["episode_id"].unique()
+
+fig, ax = plt.subplots(figsize=(11, 6))
+
+for episode_id in episode_ids:
+    subset = plot_data[plot_data["episode_id"] == episode_id]
+
+    x_values = []
+    y_values = []
+
+    for event in event_order:
+        row = subset[subset["event"] == event]
+
+        if not row.empty:
+            x_values.append(row["delta_t_min"].iloc[0])
+            y_values.append(event)
+
+    ax.scatter(
+        x_values,
+        y_values,
+        s=90,
+        label=episode_id,
+    )
+
+# T0 reference line
+ax.axvline(
+    x=0,
+    linewidth=2,
+    linestyle="--",
+)
+
+ax.set_title(
+    "Morning Light Cross-Episode Timing Map v0.2\n"
+    "T0 = Turning Zone End"
+)
+
+ax.set_xlabel(
+    "Delta Time from T0 (minutes)   "
+    "<-- Earlier | Later -->"
+)
+
+ax.set_ylabel("Observed Event")
+
+ax.grid(
+    True,
+    axis="x",
+    linestyle=":",
+    alpha=0.5,
+)
+
+ax.legend(title="Episode")
+
+plt.tight_layout()
+
+plot_file = REPORTS_DIR / "cross_episode_timing_map_v0_2.png"
+
+plt.savefig(
+    plot_file,
+    dpi=180,
+    bbox_inches="tight",
+)
+
+plt.close()
+
+print()
+print(f"Timing map saved to: {plot_file}")
+
+
+
+
+
+
+
+
+
+
+
+
+
