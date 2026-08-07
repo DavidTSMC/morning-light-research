@@ -122,10 +122,17 @@ evidence["role"] = evidence["time"].apply(classify_role)
 # Episode identity
 # ------------------------------------------------------------
 
-evidence.insert(0, "episode_id", "E001")
-evidence.insert(1, "ticker", "2330.TW")
-evidence.insert(2, "date", "2026-08-07")
-evidence.insert(3, "timeframe", "5m")
+evidence.insert(0, "episode_id", episode["episode_id"])
+evidence.insert(1, "ticker", episode["ticker"])
+evidence.insert(2, "date", episode["date"])
+evidence.insert(3, "timeframe", episode["timeframe"])
+
+
+
+
+
+
+
 
 
 # ------------------------------------------------------------
