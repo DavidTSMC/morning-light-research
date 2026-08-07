@@ -41,8 +41,7 @@ print("Research foundation created successfully.")
 # Episode 001
 # 2330.TW | 2026-08-07 | Intraday reversal study
 # ---------------------------------------------------------
-
-episode = {
+episode_E001 = {
     "episode_id": "E001",
     "ticker": "2330.TW",
     "date": "2026-08-07",
@@ -66,8 +65,20 @@ episode_E002 = {
     "research_type": "intraday_reversal",
 }
 
+episode_E003 = {
+    "episode_id": "E003",
+    "ticker": "2454.TW",
+    "date": "2026-08-07",
+    "timeframe": "5m",
+    "start_time": "12:20",
+    "turning_zone_start": "12:50",
+    "turning_zone_end": "13:05",
+    "end_time": "13:30",
+    "research_type": "intraday_reversal",
+}
+
 # Select episode for current research run
-episode = episode_E002
+episode = episode_E003
 
 
 
@@ -127,6 +138,31 @@ evidence_rows_E002 = [
 
 ]
 
+# ------------------------------------------------------------
+# E003 - 2454.TW - 2026-08-07 - 5-minute evidence
+# ------------------------------------------------------------
+
+evidence_rows_E003 = [
+    # time, close, MTM3, MTM10, OBV, OBV_MA3, BBI
+    ("12:20", 3860, -15, -4.0, -2556, -2469, 3883.00),
+    ("12:25", 3880,  -5, -4.0, -2470, -2498, 3881.44),
+    ("12:30", 3875,   5, -6.0, -2501, -2509, 3880.58),
+    ("12:35", 3885,  25, -5.5, -2448, -2473, 3882.05),
+    ("12:40", 3865, -15, -7.5, -2488, -2479, 3879.16),
+    ("12:45", 3860, -15, -8.5, -2526, -2487, 3876.44),
+    ("12:50", 3850, -35, -11.0, -2596, -2537, 3870.57),
+    ("12:55", 3840, -25, -11.0, -2779, -2634, 3865.19),
+    ("13:00", 3875,  15, -8.0, -2692, -2689, 3865.43),
+    ("13:05", 3900,  50, -1.5, -2591, -2687, 3871.99),
+    ("13:10", 3895,  55,  5.5, -2677, -2653, 3879.04),
+    ("13:15", 3885,  10,  7.0, -2727, -2665, 3881.49),
+    ("13:20", 3900,   0,  6.5, -2576, -2660, 3885.11),
+    ("13:25", 3895,   0,  4.0, -2942, -2748, 3886.52),
+    ("13:30", 3900,  15,  7.0, -2521, -2680, 3888.91),
+]
+
+# Select evidence rows for current research run
+evidence_rows = evidence_rows_E003
 
 columns = [
     "time",
@@ -148,6 +184,8 @@ if episode["episode_id"] == "E001":
     selected_rows = evidence_rows
 elif episode["episode_id"] == "E002":
     selected_rows = evidence_rows_E002
+elif episode["episode_id"] == "E003":
+    selected_rows = evidence_rows_E003
 else:
     raise ValueError(
         f"Unknown episode_id: {episode['episode_id']}"
@@ -155,28 +193,14 @@ else:
 
 evidence = pd.DataFrame(selected_rows, columns=columns)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ------------------------------------------------------------
 # Mark each observation relative to the known turning zone.
 # ------------------------------------------------------------
 
 def classify_role(time_text):
-    if time_text < "12:45":
+    if time_text < episode["turning_zone_start"]:
         return "LEAD"
-    elif time_text <= "13:00":
+    elif time_text <= episode["turning_zone_end"]:
         return "TURNING_ZONE"
     else:
         return "CONFIRM_OR_LAG"
