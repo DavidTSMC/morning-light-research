@@ -178,27 +178,32 @@ print("=" * 72)
 print(matrix.to_string(index=False))
 
 
+# ============================================================
+# CROSS-EPISODE STATISTICAL SUMMARY v0.2
+# Evidence First | Descriptive Statistics Only
+# ============================================================
 
+summary = (
+    matrix
+    .dropna(subset=["delta_t_min"])
+    .groupby("event")["delta_t_min"]
+    .agg(
+        n="count",
+        mean_delta="mean",
+        median_delta="median",
+        min_delta="min",
+        max_delta="max",
+    )
+    .reset_index()
+)
 
+summary["spread"] = summary["max_delta"] - summary["min_delta"]
 
+print()
+print("=" * 72)
+print("CROSS-EPISODE STATISTICAL SUMMARY v0.2")
+print("T0 = turning_zone_end")
+print("Negative = before T0 | Positive = after T0")
+print("=" * 72)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+print(summary.to_string(index=False))
