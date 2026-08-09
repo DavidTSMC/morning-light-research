@@ -475,7 +475,70 @@ def validate_states(rows):
     print("=" * 72)
 
 
+def build_timing_ladder(rows):
+    ladder = []
+
+    stage_order = {
+        "WATCH": 1,
+        "PROBE": 2,
+        "ADD": 3,
+        "CONFIRM": 4,
+    }
+
+    for row in rows:
+        state = map_state(row["role"])
+
+        ladder.append({
+            "time": row["time"],
+            "delta": row["delta"],
+            "event": row["event"],
+            "role": row["role"],
+            "state": state,
+            "stage": stage_order[state],
+            "source": row["source"],
+        })
+
+    ladder.sort(key=lambda x: (x["delta"], x["stage"]))
+
+    return ladder
+
+
+
 
 if __name__ == "__main__":
     main()
     validate_states(unified)
+    timing_ladder = build_timing_ladder(unified)
+
+    print()
+    print("E005 v0.6 - TIMING LADDER")
+    print(f"ladder rows: {len(timing_ladder)}")   
+
+
+print("-" * 96)
+print(
+    f"{'TIME':5} | {'T0':8} | {'STAGE':5} | "
+    f"{'STATE':8} | {'EVENT':22} | {'ROLE':24} | SOURCE"
+)
+print("-" * 96)
+
+for row in timing_ladder:
+    print(
+        f"{row['time']:5} | "
+        f"T{row['delta']:+3} min | "
+        f"{row['stage']:5} | "
+        f"{row['state']:8} | "
+        f"{row['event']:22} | "
+        f"{row['role']:24} | "
+        f"{row['source']}"
+    )
+
+
+
+
+
+
+
+
+
+
