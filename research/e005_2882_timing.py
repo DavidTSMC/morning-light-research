@@ -71,6 +71,75 @@ evidence_rows_5m = [
       0.18, 0.27, 19.13, 15.02, -0.03, -0.19),
 ]
 
+# ------------------------------------------------------------
+# E005 v0.2 - Oscillator evidence
+# Source: captured 2882 snapshots around the 92.5 turning episode.
+# Do not interpolate missing timestamps.
+# ------------------------------------------------------------
+
+oscillator_rows_5m = [
+    # time, close, WR5, WR10, J, PSY12, PSY24
+
+    ("12:30", 93.2, -80.00, -87.18,  3.58, 25.00, 37.50),
+    ("13:00", 93.7, -52.00, -70.73, 20.56, 33.33, 37.50),
+    ("13:30", 94.1, -23.81, -60.98, 36.66, 33.33, 37.50),
+]
+
+
+def detect_oscillator_events(rows):
+    events = []
+
+    TIME = 0
+    CLOSE = 1
+    WR5 = 2
+    WR10 = 3
+    J = 4
+    PSY12 = 5
+    PSY24 = 6
+
+    # WR5 recovery from oversold area
+    for prev, curr in zip(rows, rows[1:]):
+        if prev[WR5] <= -80 and curr[WR5] > -80:
+            events.append(
+                ("WR5_RECOVERY", curr[TIME], curr[CLOSE], "EARLY_RECOVERY")
+            )
+            break
+
+    # WR5 above -50
+    for r in rows:
+        if r[WR5] > -50:
+            events.append(
+                ("WR5_ABOVE_-50", r[TIME], r[CLOSE], "MOMENTUM_RECOVERY")
+            )
+            break
+
+    # J observed rising
+    for prev, curr in zip(rows, rows[1:]):
+        if curr[J] > prev[J]:
+            events.append(
+                ("J_RISING_OBSERVED", curr[TIME], curr[CLOSE], "EARLY_RECOVERY")
+            )
+            break
+
+    # J above 20
+    for r in rows:
+        if r[J] > 20:
+            events.append(
+                ("J_ABOVE_20", r[TIME], r[CLOSE], "RECOVERY")
+            )
+            break
+
+    # PSY12 rising
+    for prev, curr in zip(rows, rows[1:]):
+        if curr[PSY12] > prev[PSY12]:
+            events.append(
+                ("PSY12_RISING", curr[TIME], curr[CLOSE], "CONFIRM")
+            )
+            break
+
+    events.sort(key=lambda x: x[1])
+    return events
+
 
 
 def main():
@@ -262,6 +331,26 @@ for event, time, price, role in events:
         f"price={price:5.1f} | "
         f"{role}"
     )
+
+osc_events = detect_oscillator_events(oscillator_rows_5m)
+
+print()
+print("=" * 72)
+print("E005 - OSCILLATOR SEQUENCE v0.2")
+print("=" * 72)
+
+for event, time, price, role in osc_events:
+    delta = minutes_from_t0(time, EPISODE["turning_time"])
+
+    print(
+        f"{time:5} | "
+        f"T{delta:+3} min | "
+        f"{event:22} | "
+        f"price={price:5.1f} | "
+        f"{role}"
+    )
+
+
 
 if __name__ == "__main__":
     main()
