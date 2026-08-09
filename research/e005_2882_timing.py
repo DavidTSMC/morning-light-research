@@ -503,6 +503,20 @@ def build_timing_ladder(rows):
     return ladder
 
 
+def timing_phase(delta):
+    if delta < 0:
+        return "LEAD"
+
+    if 0 <= delta <= 5:
+        return "TURN"
+
+    if 5 < delta <= 10:
+        return "RESONANCE"
+
+    if 10 < delta <= 20:
+        return "BRIDGE"
+
+    return "CONFIRM"
 
 
 if __name__ == "__main__":
@@ -513,6 +527,25 @@ if __name__ == "__main__":
     print()
     print("E005 v0.6 - TIMING LADDER")
     print(f"ladder rows: {len(timing_ladder)}")   
+
+
+    print()
+    print("=" * 72)
+    print("E005 v0.7 - TIMING PHASE TEST")
+    print("=" * 72)
+
+    for row in timing_ladder:
+        phase = timing_phase(row["delta"])
+
+        print(
+            f"{row['time']:5} | "
+            f"T{row['delta']:+3} min | "
+            f"{phase:10} | "
+            f"{row['event']:22} | "
+            f"{row['state']:8}"
+        )
+
+
 
 
 print("-" * 96)
