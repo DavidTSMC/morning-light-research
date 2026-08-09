@@ -412,7 +412,6 @@ for row in unified:
             f"{row['source']}"
         )
 
-
 # ------------------------------------------------------------
 # E005 v0.4 - State Mapping
 # Signal -> Timing -> Amount
@@ -434,7 +433,6 @@ def map_state(role):
         return "CONFIRM"
 
     return "WATCH"
-
 
 print()
 print("=" * 104)
@@ -459,8 +457,25 @@ for row in unified:
     )
 
 
+def validate_states(rows):
+    counts = {}
+
+    for row in rows:
+        state = map_state(row["role"])
+        counts[state] = counts.get(state, 0) + 1
+
+    print()
+    print("=" * 72)
+    print("E005 - STATE VALIDATION v0.5")
+    print("=" * 72)
+
+    for state in ("WATCH", "PROBE", "ADD", "CONFIRM"):
+        print(f"{state:8} : {counts.get(state, 0)}")
+
+    print("=" * 72)
+
+
 
 if __name__ == "__main__":
     main()
-
-
+    validate_states(unified)
