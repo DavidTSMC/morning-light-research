@@ -140,6 +140,37 @@ def detect_oscillator_events(rows):
     events.sort(key=lambda x: x[1])
     return events
 
+def build_unified_timeline(signal_events, oscillator_events, t0_str):
+    unified = []
+
+    for source, source_events in [
+        ("SIGNAL", signal_events),
+        ("OSC", oscillator_events),
+    ]:
+        for event, time, price, role in source_events:
+            delta = minutes_from_t0(time, t0_str)
+
+            unified.append(
+                {
+                    "time": time,
+                    "delta": delta,
+                    "event": event,
+                    "price": price,
+                    "role": role,
+                    "source": source,
+                }
+            )
+
+    unified.sort(
+        key=lambda x: (
+            x["delta"],
+            x["time"],
+            x["source"],
+            x["event"],
+        )
+    )
+
+    return unified
 
 
 def main():
@@ -349,6 +380,38 @@ for event, time, price, role in osc_events:
         f"price={price:5.1f} | "
         f"{role}"
     )
+
+unified = build_unified_timeline(
+        events,
+        osc_events,
+        EPISODE["turning_time"],
+
+)
+
+   
+print()
+print("=" * 88)
+print("E005 - UNIFIED TIMING TABLE v0.3")
+print("=" * 88)
+
+print(
+        f"{'TIME':5} | {'T0':8} | {'EVENT':22} | "
+        f"{'PRICE':7} | {'ROLE':24} | SOURCE"
+    )
+print("-" * 88)
+
+
+
+for row in unified:
+        print(
+            f"{row['time']:5} | "
+            f"T{row['delta']:+3} min | "
+            f"{row['event']:22} | "
+            f"{row['price']:7.1f} | "
+            f"{row['role']:24} | "
+            f"{row['source']}"
+        )
+
 
 
 
