@@ -413,6 +413,51 @@ for row in unified:
         )
 
 
+# ------------------------------------------------------------
+# E005 v0.4 - State Mapping
+# Signal -> Timing -> Amount
+# Descriptive prototype only.
+# No position sizing yet.
+# ------------------------------------------------------------
+
+def map_state(role):
+    if role in ("LEAD", "EARLY_RECOVERY"):
+        return "WATCH"
+
+    if role in ("RETEST", "SECOND_LEG_CONFIRMATION"):
+        return "PROBE"
+
+    if role in ("MOMENTUM_CONFIRM", "RECOVERY", "BRIDGE"):
+        return "ADD"
+
+    if role in ("CONFIRM", "MOMENTUM_RECOVERY"):
+        return "CONFIRM"
+
+    return "WATCH"
+
+
+print()
+print("=" * 104)
+print("E005 - STATE MAPPING v0.4")
+print("=" * 104)
+print(
+    f"{'TIME':5} | {'T0':8} | {'EVENT':22} | "
+    f"{'ROLE':24} | {'STATE':8} | SOURCE"
+)
+print("-" * 104)
+
+for row in unified:
+    state = map_state(row["role"])
+
+    print(
+        f"{row['time']:5} | "
+        f"T{row['delta']:+3} min | "
+        f"{row['event']:22} | "
+        f"{row['role']:24} | "
+        f"{state:8} | "
+        f"{row['source']}"
+    )
+
 
 
 if __name__ == "__main__":
