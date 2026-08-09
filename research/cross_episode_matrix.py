@@ -31,6 +31,7 @@ episode_files = {
     "E001": REPORTS_DIR / "episode_E001_evidence.csv",
     "E002": REPORTS_DIR / "episode_E002_evidence.csv",
     "E003": REPORTS_DIR / "episode_E003_evidence.csv",
+    "E004": REPORTS_DIR / "episode_E004_evidence.csv",
 
 }
 
@@ -129,6 +130,7 @@ turning_zone_end = {
     "E001": "13:00",
     "E002": "13:00",
     "E003": "13:05",
+    "E004": "20:30",
 }
 matrix_rows = []
 

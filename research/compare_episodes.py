@@ -77,9 +77,21 @@ episode_E003 = {
     "research_type": "intraday_reversal",
 }
 
-# Select episode for current research run
-episode = episode_E003
+episode_E004 = {
+    "episode_id": "E004",
+    "ticker": "XAUUSD",
+    "date": "2026-08-07",
+    "timeframe": "5m",
+    "start_time": "19:15",
+    "turning_zone_start": "20:15",
+    "turning_zone_end": "20:30",
+    "end_time": "20:45",
+    "research_type": "intraday_reversal",
+}
 
+
+# Select episode for current research run
+episode = episode_E004
 
 
 print()
@@ -160,9 +172,32 @@ evidence_rows_E003 = [
     ("13:25", 3895,   0,  4.0, -2942, -2748, 3886.52),
     ("13:30", 3900,  15,  7.0, -2521, -2680, 3888.91),
 ]
+# ------------------------------------------------------------
+# E004 - XAUUSD - 2026-08-07 - 5-minute evidence
+# ------------------------------------------------------------
+
+evidence_rows_E004 = [
+    # time, close, MTM3, MTM10, OBV, OBV_MA3, BBI
+    ("19:15", 4319.49,  2.76,  7.05, None, None, 4319.08),
+    ("19:20", 4320.38, -3.32,  6.66, None, None, 4319.27),
+    ("19:25", 4324.23, -0.97,  8.44, None, None, 4319.91),
+    ("19:30", 4324.97,  5.48,  7.77, None, None, 4320.82),
+    ("19:35", 4324.96,  4.58,  8.19, None, None, 4321.61),
+    ("19:40", 4323.28, -0.95,  5.08, None, None, 4322.00),
+    ("19:45", 4322.83, -2.14,  5.52, None, None, 4322.15),
+    ("19:50", 4323.82, -1.14,  7.09, None, None, 4322.28),
+    ("19:55", 4325.74,  2.46,  2.04, None, None, 4322.66),
+    ("20:05", 4319.67,  None,  None, None, None, None),
+    ("20:15", 4314.89,  None,  None, None, None, None),
+    ("20:25", 4310.52,  None,  None, None, None, None),
+    ("20:30", 4311.10, -3.79, -12.18, None, None, 4315.81),
+    ("20:35", 4360.40, 46.81,  None, None, None, 4323.20),
+    ("20:45", 4366.41, 55.31,  None, None, None, 4340.55),
+]
+
 
 # Select evidence rows for current research run
-evidence_rows = evidence_rows_E003
+evidence_rows = evidence_rows_E004
 
 columns = [
     "time",
@@ -186,10 +221,13 @@ elif episode["episode_id"] == "E002":
     selected_rows = evidence_rows_E002
 elif episode["episode_id"] == "E003":
     selected_rows = evidence_rows_E003
+elif episode["episode_id"] == "E004":
+    selected_rows = evidence_rows_E004
 else:
     raise ValueError(
         f"Unknown episode_id: {episode['episode_id']}"
     )
+
 
 evidence = pd.DataFrame(selected_rows, columns=columns)
 
