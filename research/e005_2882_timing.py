@@ -567,11 +567,214 @@ for row in timing_ladder:
     )
 
 
+# ============================================================
+# E005 v0.8 — MORNING LIGHT STAGE MAPPING
+# Research layer only — does not alter existing evidence
+# ============================================================
+
+STAGE_MAP = {
+    "WATCH": "EARLY",
+    "PROBE": "EARLY",
+    "ADD": "CONFIRMING",
+    "CONFIRM": "FULL_POWER",
+}
+
+print()
+print("=" * 96)
+print("E005 v0.8 - MORNING LIGHT STAGE MAPPING")
+print("=" * 96)
+
+for row in timing_ladder:
+    ml_stage = STAGE_MAP.get(row["state"], "UNCLASSIFIED")
+
+    print(
+        f"{row['time']:5} | "
+        f"T{row['delta']:+3} min | "
+        f"{ml_stage:11} | "
+        f"{row['event']:22} | "
+        f"{row['role']:24}"
+    )
 
 
 
+# ============================================================
+# E005 v0.9A — EVIDENCE FAMILY CLASSIFICATION
+# Purpose:
+#   Classify each timing event by evidence family.
+#   Do NOT count correlated indicators as independent evidence.
+# ============================================================
+
+def evidence_family(event):
+    event = str(event).upper()
+
+    if "MTM" in event:
+        return "MOMENTUM"
+
+    if any(x in event for x in ["WR", "W/R", "J_", "PSY"]):
+        return "OSCILLATOR"
+
+    if "BIAS" in event:
+        return "STRUCTURE"
+
+    if any(x in event for x in ["DMI", "DI_OSC", "ADX"]):
+        return "REGIME"
+
+    if any(x in event for x in ["OBV", "VOLUME", "VOL_"]):
+        return "CAPITAL"
+
+    if any(x in event for x in ["MACD", "DIF", "D-M", "DM_"]):
+        return "TREND_MOMENTUM"
+
+    return "OTHER"
 
 
+print()
+print("=" * 108)
+print("E005 v0.9A - EVIDENCE FAMILY CLASSIFICATION")
+print("=" * 108)
+
+seen_families = set()
+
+for row in timing_ladder:
+    family = evidence_family(row["event"])
+    seen_families.add(family)
+
+    print(
+        f"{row['time']:5} | "
+        f"T{row['delta']:+3} min | "
+        f"{family:15} | "
+        f"{row['event']:22} | "
+        f"{row['role']}"
+    )
+
+print("-" * 108)
+print("Independent evidence families observed:")
+print(", ".join(sorted(seen_families)))
+print(f"Family count = {len(seen_families)}")
 
 
+# ============================================================
+# E005 v0.9B — TRUE / FALSE REGIME CHECK
+#
+# Logic:
+#   1 family       -> REVERSAL_CANDIDATE
+#   2+ families    -> BUILDING_CONFIRMATION
+#   REGIME joins an existing evidence chain
+#                  -> REGIME_CONFIRMED
+#
+# Important:
+#   REGIME alone does NOT confirm a true trend.
+# ============================================================
 
+print()
+print("=" * 108)
+print("E005 v0.9B - TRUE / FALSE REGIME CHECK")
+print("=" * 108)
+
+active_families = set()
+
+for row in timing_ladder:
+    family = evidence_family(row["event"])
+
+    # Families accumulate in chronological order.
+    if family != "OTHER":
+        active_families.add(family)
+
+    independent_count = len(active_families)
+
+    if (
+        "REGIME" in active_families
+        and independent_count >= 3
+    ):
+        regime = "REGIME_CONFIRMED"
+
+    elif independent_count >= 2:
+        regime = "BUILDING_CONFIRMATION"
+
+    elif independent_count == 1:
+        regime = "REVERSAL_CANDIDATE"
+
+    else:
+        regime = "UNCLASSIFIED"
+
+    print(
+        f"{row['time']:5} | "
+        f"T{row['delta']:+3} min | "
+        f"{family:15} | "
+        f"{independent_count}F | "
+        f"{regime:22} | "
+        f"{row['event']}"
+    )
+# ============================================================
+# E005 v0.9C — CASCADE STATE PROTOTYPE
+# Research evidence from the 2882 Daily bearish episode.
+#
+# IMPORTANT:
+# PAUSE != REVERSAL
+# INVALIDATED requires contrary evidence; not auto-triggered yet.
+# ============================================================
+
+bearish_cascade_evidence = [
+    {
+        "date": "2026-06-17",
+        "state": "ATTEMPT",
+        "families": ["OSCILLATOR", "STRUCTURE"],
+        "evidence": "WR_J_BIAS3_EARLY_WEAKENING",
+    },
+    {
+        "date": "2026-06-18",
+        "state": "FORMING",
+        "families": ["MOMENTUM", "STRUCTURE"],
+        "evidence": "MTM3_AND_MULTI_BIAS_A_TURN",
+    },
+    {
+        "date": "2026-06-22",
+        "state": "PROPAGATING",
+        "families": ["OSCILLATOR", "MOMENTUM", "STRUCTURE"],
+        "evidence": "SECOND_TOP_FAILED_REEXPANSION",
+    },
+    {
+        "date": "2026-06-24",
+        "state": "PROPAGATING",
+        "families": ["MOMENTUM", "STRUCTURE"],
+        "evidence": "MTM3_BIAS3_BIAS5_BELOW_ZERO",
+    },
+    {
+        "date": "2026-06-25",
+        "state": "PAUSE",
+        "families": ["OSCILLATOR", "MOMENTUM", "STRUCTURE"],
+        "evidence": "SHORT_REBOUND_NOT_REVERSAL",
+    },
+    {
+        "date": "2026-06-26",
+        "state": "PROPAGATING",
+        "families": ["TREND_MOMENTUM", "STRUCTURE"],
+        "evidence": "D_M_AND_BIAS10_BELOW_ZERO",
+    },
+    {
+        "date": "2026-06-30",
+        "state": "REGIME_CONFIRMED",
+        "families": ["REGIME"],
+        "evidence": "DI_OSC_BELOW_ZERO",
+    },
+]
+
+print()
+print("=" * 112)
+print("E005 v0.9C - BEARISH CASCADE STATE PROTOTYPE")
+print("=" * 112)
+
+for row in bearish_cascade_evidence:
+    families = "+".join(row["families"])
+    print(
+        f"{row['date']} | "
+        f"{row['state']:16} | "
+        f"{families:38} | "
+        f"{row['evidence']}"
+    )
+
+print("-" * 112)
+print("RULE: PAUSE != REVERSAL")
+print("RULE: CASCADE != RESONANCE")
+print("RULE: INVALIDATION requires contrary evidence.")
+print("RULE: Evidence propagates through time.")
