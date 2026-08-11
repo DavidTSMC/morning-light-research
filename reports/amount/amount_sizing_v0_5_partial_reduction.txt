@@ -1,0 +1,132 @@
+========================================================================================================================
+AMOUNT SIZING v0.5 — PARTIAL REDUCTION POLICY TEST
+SOURCE: FROZEN v0.3R EVENTS
+ACTION POINT: THRESHOLD-HIT SAME-DAY CLOSE
+POLICIES: EXIT 100% vs REDUCE 50% vs HOLD 100%
+50% IS A NEUTRAL EXPERIMENT — NOT AN OPTIMIZED PARAMETER
+========================================================================================================================
+
+A. 5D POLICY OUTCOME BY DISTANCE × EVIDENCE STATE
+========================================================================================================================
+
+THRESHOLD -2%
+-------------------------------------------------------------------------------------
+
+INTACT | N=9
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean=  0.97% | median= -0.43% | negative= 55.6%
+HOLD_100   | mean=  1.94% | median= -0.85% | negative= 55.6%
+
+EARLY_WARNING | N=13
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -0.09% | median= -1.17% | negative= 61.5%
+HOLD_100   | mean= -0.18% | median= -2.35% | negative= 61.5%
+
+MOMENTUM_DETERIORATION | N=51
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -0.76% | median=  0.12% | negative= 49.0%
+HOLD_100   | mean= -1.52% | median=  0.24% | negative= 49.0%
+
+DM_STATE_CHANGE | N=10
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean=  0.53% | median=  0.52% | negative= 40.0%
+HOLD_100   | mean=  1.07% | median=  1.04% | negative= 40.0%
+
+THRESHOLD -3%
+-------------------------------------------------------------------------------------
+
+EARLY_WARNING | N=7
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -0.36% | median= -0.22% | negative= 57.1%
+HOLD_100   | mean= -0.73% | median= -0.43% | negative= 57.1%
+
+MOMENTUM_DETERIORATION | N=42
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -0.93% | median=  0.49% | negative= 42.9%
+HOLD_100   | mean= -1.86% | median=  0.98% | negative= 42.9%
+
+DM_STATE_CHANGE | N=15
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean=  0.85% | median=  0.69% | negative= 40.0%
+HOLD_100   | mean=  1.70% | median=  1.39% | negative= 40.0%
+
+THRESHOLD -5%
+-------------------------------------------------------------------------------------
+
+EARLY_WARNING | N=1
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -1.17% | median= -1.17% | negative=100.0%
+HOLD_100   | mean= -2.35% | median= -2.35% | negative=100.0%
+
+MOMENTUM_DETERIORATION | N=25
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -0.45% | median=  0.25% | negative= 44.0%
+HOLD_100   | mean= -0.90% | median=  0.49% | negative= 44.0%
+
+DM_STATE_CHANGE | N=17
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -0.87% | median=  0.91% | negative= 41.2%
+HOLD_100   | mean= -1.73% | median=  1.83% | negative= 41.2%
+
+B. DETERIORATED STATES — 5D POLICY COMPARISON
+========================================================================================================================
+
+THRESHOLD -2% | N=61
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -0.55% | median=  0.27% | negative= 47.5%
+HOLD_100   | mean= -1.09% | median=  0.54% | negative= 47.5%
+
+THRESHOLD -3% | N=57
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -0.46% | median=  0.63% | negative= 42.1%
+HOLD_100   | mean= -0.92% | median=  1.25% | negative= 42.1%
+
+THRESHOLD -5% | N=42
+EXIT_100   | mean=  0.00% | median=  0.00% | negative=  0.0%
+REDUCE_50  | mean= -0.62% | median=  0.26% | negative= 42.9%
+HOLD_100   | mean= -1.24% | median=  0.51% | negative= 42.9%
+
+C. WHAT DOES 50% REDUCTION BUY?
+========================================================================================================================
+
+THRESHOLD -2% | N=61
+Recovery cases     | N= 32 | mean recovery=  3.51%
+50% upside given up| mean=  1.75%
+Loss-continuation  | N= 29 | mean continuation= -6.17%
+50% downside avoided | mean=  3.08%
+
+THRESHOLD -3% | N=57
+Recovery cases     | N= 33 | mean recovery=  3.30%
+50% upside given up| mean=  1.65%
+Loss-continuation  | N= 24 | mean continuation= -6.73%
+50% downside avoided | mean=  3.36%
+
+THRESHOLD -5% | N=42
+Recovery cases     | N= 24 | mean recovery=  4.03%
+50% upside given up| mean=  2.01%
+Loss-continuation  | N= 18 | mean continuation= -8.26%
+50% downside avoided | mean=  4.13%
+
+D. FALSE-REDUCTION CONTROL — -2% + INTACT
+========================================================================================================================
+N = 9
+HOLD_100   | mean=  1.94% | median= -0.85%
+REDUCE_50  | mean=  0.97% | median= -0.43%
+Original T_action -> 10D | mean=  4.35% | winner= 66.7%
+
+E. INTERPRETATION GUARDRAIL
+========================================================================================================================
+REDUCE_50 cannot mathematically dominate both EXIT and HOLD
+on raw mean return because it is exactly halfway between them.
+
+Its research value is different:
+- how much recovery participation is retained?
+- how much continuation loss is avoided?
+- does uncertainty justify reducing exposure rather than
+  making an all-or-none decision?
+
+========================================================================================================================
+AMOUNT SIZING v0.5 COMPLETE
+PARTIAL REDUCTION IS A RISK-EXPOSURE POLICY,
+NOT A MAGIC RETURN-OPTIMIZATION PARAMETER.
+========================================================================================================================
