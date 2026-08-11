@@ -1,0 +1,85 @@
+==========================================================================================================================
+RISK BUDGET v0.2 — CLUSTER DAMAGE MAP / CABBAGE TEST
+SOURCE: FROZEN v0.1 DAILY A2 EXPOSURE MAP
+DAMAGE = NEXT-5D MAE <= -3%
+NO CORRELATION MATRIX | NO POSITION-SIZE ASSUMPTIONS
+==========================================================================================================================
+
+A. PAIRS — MOST FREQUENTLY CO-ACTIVE
+==========================================================================================================================
+0050+2330    | Ndays= 91 | any_damage= 35.2% | JOINT_DAMAGE= 15.4% | avg_damaged=0.51 | mean_MAE= -1.67%
+2330+2454    | Ndays= 52 | any_damage= 65.4% | JOINT_DAMAGE= 23.1% | avg_damaged=0.88 | mean_MAE= -3.75%
+2330+2882    | Ndays= 46 | any_damage= 32.6% | JOINT_DAMAGE=  8.7% | avg_damaged=0.41 | mean_MAE= -1.43%
+0050+2454    | Ndays= 43 | any_damage= 65.1% | JOINT_DAMAGE= 16.3% | avg_damaged=0.81 | mean_MAE= -3.93%
+2330+2382    | Ndays= 37 | any_damage= 37.8% | JOINT_DAMAGE=  5.4% | avg_damaged=0.43 | mean_MAE= -1.38%
+0050+2603    | Ndays= 35 | any_damage= 60.0% | JOINT_DAMAGE= 20.0% | avg_damaged=0.80 | mean_MAE= -2.97%
+0050+2882    | Ndays= 29 | any_damage= 13.8% | JOINT_DAMAGE=  3.4% | avg_damaged=0.17 | mean_MAE= -1.12%
+2603+2882    | Ndays= 26 | any_damage= 61.5% | JOINT_DAMAGE=  7.7% | avg_damaged=0.69 | mean_MAE= -3.44%
+2454+2882    | Ndays= 24 | any_damage= 50.0% | JOINT_DAMAGE=  8.3% | avg_damaged=0.58 | mean_MAE= -2.32%
+2382+2882    | Ndays= 22 | any_damage= 45.5% | JOINT_DAMAGE=  4.5% | avg_damaged=0.50 | mean_MAE= -2.11%
+0050+2382    | Ndays= 20 | any_damage= 55.0% | JOINT_DAMAGE= 35.0% | avg_damaged=0.90 | mean_MAE= -3.05%
+2330+2603    | Ndays= 19 | any_damage= 47.4% | JOINT_DAMAGE= 15.8% | avg_damaged=0.63 | mean_MAE= -2.72%
+2382+2603    | Ndays= 16 | any_damage= 56.2% | JOINT_DAMAGE= 25.0% | avg_damaged=0.81 | mean_MAE= -2.61%
+2454+2603    | Ndays= 14 | any_damage= 92.9% | JOINT_DAMAGE= 28.6% | avg_damaged=1.21 | mean_MAE= -3.44%
+
+B. PAIRS — HIGHEST JOINT-DAMAGE RATE
+MINIMUM CO-ACTIVE DAYS = 10
+==========================================================================================================================
+0050+2382    | Ndays= 20 | JOINT_DAMAGE= 35.0% | any_damage= 55.0% | mean_MAE= -3.05%
+2454+2603    | Ndays= 14 | JOINT_DAMAGE= 28.6% | any_damage= 92.9% | mean_MAE= -3.44%
+2382+2603    | Ndays= 16 | JOINT_DAMAGE= 25.0% | any_damage= 56.2% | mean_MAE= -2.61%
+2330+2454    | Ndays= 52 | JOINT_DAMAGE= 23.1% | any_damage= 65.4% | mean_MAE= -3.75%
+0050+2603    | Ndays= 35 | JOINT_DAMAGE= 20.0% | any_damage= 60.0% | mean_MAE= -2.97%
+0050+2454    | Ndays= 43 | JOINT_DAMAGE= 16.3% | any_damage= 65.1% | mean_MAE= -3.93%
+2330+2603    | Ndays= 19 | JOINT_DAMAGE= 15.8% | any_damage= 47.4% | mean_MAE= -2.72%
+0050+2330    | Ndays= 91 | JOINT_DAMAGE= 15.4% | any_damage= 35.2% | mean_MAE= -1.67%
+2330+2882    | Ndays= 46 | JOINT_DAMAGE=  8.7% | any_damage= 32.6% | mean_MAE= -1.43%
+2454+2882    | Ndays= 24 | JOINT_DAMAGE=  8.3% | any_damage= 50.0% | mean_MAE= -2.32%
+2603+2882    | Ndays= 26 | JOINT_DAMAGE=  7.7% | any_damage= 61.5% | mean_MAE= -3.44%
+2330+2382    | Ndays= 37 | JOINT_DAMAGE=  5.4% | any_damage= 37.8% | mean_MAE= -1.38%
+2382+2882    | Ndays= 22 | JOINT_DAMAGE=  4.5% | any_damage= 45.5% | mean_MAE= -2.11%
+0050+2882    | Ndays= 29 | JOINT_DAMAGE=  3.4% | any_damage= 13.8% | mean_MAE= -1.12%
+
+C. TRIPLES — MOST FREQUENTLY CO-ACTIVE
+==========================================================================================================================
+0050+2330+2454    | Ndays= 42 | any_damage= 69.0% | ALL3_DAMAGE= 16.7% | avg_damaged=1.14 | mean_MAE= -3.25%
+0050+2330+2882    | Ndays= 28 | any_damage= 32.1% | ALL3_DAMAGE=  3.6% | avg_damaged=0.43 | mean_MAE= -1.26%
+2330+2454+2882    | Ndays= 18 | any_damage= 55.6% | ALL3_DAMAGE=  0.0% | avg_damaged=0.67 | mean_MAE= -1.94%
+0050+2454+2882    | Ndays= 18 | any_damage= 50.0% | ALL3_DAMAGE=  0.0% | avg_damaged=0.50 | mean_MAE= -1.80%
+0050+2330+2603    | Ndays= 15 | any_damage= 60.0% | ALL3_DAMAGE= 13.3% | avg_damaged=0.93 | mean_MAE= -2.52%
+0050+2382+2603    | Ndays= 12 | any_damage= 75.0% | ALL3_DAMAGE= 33.3% | avg_damaged=1.67 | mean_MAE= -3.42%
+2330+2603+2882    | Ndays= 11 | any_damage= 54.5% | ALL3_DAMAGE=  9.1% | avg_damaged=0.91 | mean_MAE= -2.90%
+2330+2382+2882    | Ndays= 10 | any_damage= 30.0% | ALL3_DAMAGE=  0.0% | avg_damaged=0.40 | mean_MAE= -0.79%
+0050+2603+2882    | Ndays=  9 | any_damage= 55.6% | ALL3_DAMAGE= 11.1% | avg_damaged=0.89 | mean_MAE= -3.26%
+0050+2330+2382    | Ndays=  8 | any_damage= 37.5% | ALL3_DAMAGE=  0.0% | avg_damaged=0.50 | mean_MAE= -1.21%
+2454+2603+2882    | Ndays=  3 | any_damage=100.0% | ALL3_DAMAGE= 33.3% | avg_damaged=2.00 | mean_MAE= -3.39%
+2330+2382+2603    | Ndays=  3 | any_damage= 33.3% | ALL3_DAMAGE=  0.0% | avg_damaged=0.33 | mean_MAE= -1.01%
+2382+2603+2882    | Ndays=  1 | any_damage=100.0% | ALL3_DAMAGE=  0.0% | avg_damaged=1.00 | mean_MAE= -2.91%
+
+D. CABBAGE TEST — HIGH FREQUENCY + HIGH JOINT DAMAGE
+==========================================================================================================================
+Descriptive pair medians: coactive_days=27.5, joint_damage=15.6%
+
+Pairs above BOTH medians (descriptive candidates only):
+2330+2454    | Ndays= 52 | joint_damage= 23.1%
+0050+2603    | Ndays= 35 | joint_damage= 20.0%
+0050+2454    | Ndays= 43 | joint_damage= 16.3%
+
+E. 0050 + 2330 SPECIAL CHECK
+==========================================================================================================================
+Co-active days      = 91
+Any damage rate     = 35.2%
+Both damaged rate   = 15.4%
+Mean member MAE     = -1.67%
+
+F. REPRODUCIBILITY RECORD
+==========================================================================================================================
+SCRIPT = /workspaces/morning-light-research/research/amount/risk_budget_v0_2_cluster_damage.py
+OUTPUT CSV = reports/amount/risk_budget_v0_2_cluster_damage.csv
+CLUSTERS TESTED = 27
+
+==========================================================================================================================
+RISK BUDGET v0.2 COMPLETE
+CO-ACTIVITY IS NOT ENOUGH.
+CLUSTER RISK REQUIRES OBSERVED JOINT DOWNSIDE.
+==========================================================================================================================

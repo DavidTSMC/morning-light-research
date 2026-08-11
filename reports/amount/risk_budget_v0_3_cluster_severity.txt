@@ -1,0 +1,86 @@
+==========================================================================================================================
+RISK BUDGET v0.3 — CLUSTER SEVERITY / JOINT TAIL
+SOURCE: FROZEN v0.1 DAILY A2 EXPOSURE MAP
+JOINT DAMAGE = BOTH NEXT-5D MAE <= -3%
+JOINT SEVERE = BOTH NEXT-5D MAE <= -5%
+NO NEW INDICATORS OR A2 DEFINITIONS
+==========================================================================================================================
+
+A. JOINT-DAMAGE SEVERITY
+MINIMUM CO-ACTIVE DAYS = 10
+==========================================================================================================================
+2330+2603    | Ndays= 19 | jointN= 3 | joint_rate= 15.8% | avg_pair_MAE= -8.55% | worst_member=-12.18%
+0050+2454    | Ndays= 43 | jointN= 7 | joint_rate= 16.3% | avg_pair_MAE= -8.11% | worst_member=-11.93%
+2330+2454    | Ndays= 52 | jointN=12 | joint_rate= 23.1% | avg_pair_MAE= -7.67% | worst_member=-10.94%
+0050+2382    | Ndays= 20 | jointN= 7 | joint_rate= 35.0% | avg_pair_MAE= -6.76% | worst_member= -7.59%
+0050+2603    | Ndays= 35 | jointN= 7 | joint_rate= 20.0% | avg_pair_MAE= -6.12% | worst_member= -8.59%
+2603+2882    | Ndays= 26 | jointN= 2 | joint_rate=  7.7% | avg_pair_MAE= -5.78% | worst_member= -7.83%
+2382+2603    | Ndays= 16 | jointN= 4 | joint_rate= 25.0% | avg_pair_MAE= -5.29% | worst_member= -6.59%
+2454+2882    | Ndays= 24 | jointN= 2 | joint_rate=  8.3% | avg_pair_MAE= -5.00% | worst_member= -5.75%
+2330+2882    | Ndays= 46 | jointN= 4 | joint_rate=  8.7% | avg_pair_MAE= -4.75% | worst_member= -5.29%
+0050+2330    | Ndays= 91 | jointN=14 | joint_rate= 15.4% | avg_pair_MAE= -4.48% | worst_member= -4.92%
+2382+2882    | Ndays= 22 | jointN= 1 | joint_rate=  4.5% | avg_pair_MAE= -4.41% | worst_member= -5.17%
+2454+2603    | Ndays= 14 | jointN= 4 | joint_rate= 28.6% | avg_pair_MAE= -4.28% | worst_member= -4.79%
+2330+2382    | Ndays= 37 | jointN= 2 | joint_rate=  5.4% | avg_pair_MAE= -4.25% | worst_member= -5.30%
+0050+2882    | Ndays= 29 | jointN= 1 | joint_rate=  3.4% | avg_pair_MAE= -3.49% | worst_member= -3.66%
+
+B. BOTH <= -5% — JOINT SEVERE TAIL
+==========================================================================================================================
+0050+2382    | Ndays= 20 | severeN= 5 | BOTH<=-5%= 25.0% | joint>=-3%= 35.0%
+2382+2603    | Ndays= 16 | severeN= 1 | BOTH<=-5%=  6.2% | joint>=-3%= 25.0%
+2330+2454    | Ndays= 52 | severeN= 3 | BOTH<=-5%=  5.8% | joint>=-3%= 23.1%
+2330+2603    | Ndays= 19 | severeN= 1 | BOTH<=-5%=  5.3% | joint>=-3%= 15.8%
+0050+2454    | Ndays= 43 | severeN= 2 | BOTH<=-5%=  4.7% | joint>=-3%= 16.3%
+0050+2330    | Ndays= 91 | severeN= 3 | BOTH<=-5%=  3.3% | joint>=-3%= 15.4%
+0050+2603    | Ndays= 35 | severeN= 1 | BOTH<=-5%=  2.9% | joint>=-3%= 20.0%
+2330+2882    | Ndays= 46 | severeN= 1 | BOTH<=-5%=  2.2% | joint>=-3%=  8.7%
+2330+2382    | Ndays= 37 | severeN= 0 | BOTH<=-5%=  0.0% | joint>=-3%=  5.4%
+0050+2882    | Ndays= 29 | severeN= 0 | BOTH<=-5%=  0.0% | joint>=-3%=  3.4%
+2603+2882    | Ndays= 26 | severeN= 0 | BOTH<=-5%=  0.0% | joint>=-3%=  7.7%
+2454+2882    | Ndays= 24 | severeN= 0 | BOTH<=-5%=  0.0% | joint>=-3%=  8.3%
+2382+2882    | Ndays= 22 | severeN= 0 | BOTH<=-5%=  0.0% | joint>=-3%=  4.5%
+2454+2603    | Ndays= 14 | severeN= 0 | BOTH<=-5%=  0.0% | joint>=-3%= 28.6%
+
+C. FREQUENCY × SEVERITY
+==========================================================================================================================
+0050+2382    | Ndays= 20 | joint_rate= 35.0% | avg_joint_MAE= -6.76% | severity_index= 236.7
+2330+2454    | Ndays= 52 | joint_rate= 23.1% | avg_joint_MAE= -7.67% | severity_index= 177.0
+2330+2603    | Ndays= 19 | joint_rate= 15.8% | avg_joint_MAE= -8.55% | severity_index= 135.1
+2382+2603    | Ndays= 16 | joint_rate= 25.0% | avg_joint_MAE= -5.29% | severity_index= 132.4
+0050+2454    | Ndays= 43 | joint_rate= 16.3% | avg_joint_MAE= -8.11% | severity_index= 132.1
+2454+2603    | Ndays= 14 | joint_rate= 28.6% | avg_joint_MAE= -4.28% | severity_index= 122.4
+0050+2603    | Ndays= 35 | joint_rate= 20.0% | avg_joint_MAE= -6.12% | severity_index= 122.3
+0050+2330    | Ndays= 91 | joint_rate= 15.4% | avg_joint_MAE= -4.48% | severity_index=  68.9
+2603+2882    | Ndays= 26 | joint_rate=  7.7% | avg_joint_MAE= -5.78% | severity_index=  44.5
+2454+2882    | Ndays= 24 | joint_rate=  8.3% | avg_joint_MAE= -5.00% | severity_index=  41.6
+2330+2882    | Ndays= 46 | joint_rate=  8.7% | avg_joint_MAE= -4.75% | severity_index=  41.3
+2330+2382    | Ndays= 37 | joint_rate=  5.4% | avg_joint_MAE= -4.25% | severity_index=  23.0
+
+D. SPECIAL PAIRS
+==========================================================================================================================
+0050+2330    | Ndays= 91 | joint= 15.4% | both<=-5=  3.3% | avg_joint_MAE= -4.48% | worst= -4.92%
+0050+2454    | Ndays= 43 | joint= 16.3% | both<=-5=  4.7% | avg_joint_MAE= -8.11% | worst=-11.93%
+0050+2603    | Ndays= 35 | joint= 20.0% | both<=-5=  2.9% | avg_joint_MAE= -6.12% | worst= -8.59%
+0050+2382    | Ndays= 20 | joint= 35.0% | both<=-5= 25.0% | avg_joint_MAE= -6.76% | worst= -7.59%
+2330+2454    | Ndays= 52 | joint= 23.1% | both<=-5=  5.8% | avg_joint_MAE= -7.67% | worst=-10.94%
+2454+2603    | Ndays= 14 | joint= 28.6% | both<=-5=  0.0% | avg_joint_MAE= -4.28% | worst= -4.79%
+2382+2603    | Ndays= 16 | joint= 25.0% | both<=-5=  6.2% | avg_joint_MAE= -5.29% | worst= -6.59%
+
+E. INTERPRETATION GUARDRAIL
+==========================================================================================================================
+Frequency alone does not define cluster risk.
+Severity alone does not define cluster risk.
+A useful cluster ceiling requires BOTH recurrence and meaningful joint downside.
+
+SeverityScore is descriptive only and MUST NOT be used as a production sizing formula.
+
+F. REPRODUCIBILITY RECORD
+==========================================================================================================================
+SCRIPT = /workspaces/morning-light-research/research/amount/risk_budget_v0_3_cluster_severity.py
+OUTPUT CSV = reports/amount/risk_budget_v0_3_cluster_severity.csv
+PAIR CLUSTERS = 14
+
+==========================================================================================================================
+RISK BUDGET v0.3 COMPLETE
+QUESTION: WHEN A CLUSTER IS HURT TOGETHER, HOW DEEP IS THE JOINT DAMAGE?
+==========================================================================================================================
