@@ -1,0 +1,72 @@
+================================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.4
+CROSS-FAMILY MEDICAL BOARD
+J vs BIAS10 vs D-M
+================================================================================================================================
+
+A. WARNING FREQUENCY — WINNERS vs FAILURES
+================================================================================================================================
+J        | Winner= 97.2% | Failure=100.0% | Gap=  +2.8 pp
+BIAS10   | Winner= 48.6% | Failure=100.0% | Gap= +51.4 pp
+D-M      | Winner=  9.7% | Failure= 84.8% | Gap= +75.1 pp
+
+B. FIRST WARNING TIMING
+================================================================================================================================
+J      | N=116 | median=  2.0 | mean=  2.2
+BIAS10 | N= 81 | median=  5.0 | mean=  5.4
+D-M    | N= 46 | median=  6.0 | mean=  6.0
+
+C. PRICE DISTANCE AT FIRST WARNING
+================================================================================================================================
+
+J
+ Close median=  0.05% | mean=  0.67%
+ Low   median= -0.42% | mean=  0.04%
+
+BIAS10
+ Close median= -1.99% | mean= -2.13%
+ Low   median= -2.23% | mean= -2.49%
+
+D-M
+ Close median= -4.13% | mean= -4.22%
+ Low   median= -4.93% | mean= -5.08%
+
+D. FIRST FAMILY TO WARN
+================================================================================================================================
+FirstFamily
+J         113
+BIAS10      5
+
+E. COMBINATION OUTCOME
+================================================================================================================================
+J_ONLY           | N= 36 | winner=100.0% | FWD10 mean=  7.64% | median=  6.72% | MAE10 mean= -0.60%
+B10_ONLY         | N=  2 | winner=100.0% | FWD10 mean=  3.20% | median=  3.20% | MAE10 mean= -3.65%
+J+B10            | N= 34 | winner= 79.4% | FWD10 mean=  2.38% | median=  2.11% | MAE10 mean= -2.00%
+J+DM             | N=  1 | winner=100.0% | FWD10 mean=  1.31% | median=  1.31% | MAE10 mean= -1.23%
+J+B10+DM         | N= 45 | winner= 13.3% | FWD10 mean= -5.09% | median= -3.03% | MAE10 mean= -7.96%
+
+F. CONFIRMATION DEPTH
+================================================================================================================================
+1 FAMILY         | N= 38 | winner=100.0% | FWD10 mean=  7.41% | median=  6.42% | MAE10 mean= -0.76%
+2 FAMILY         | N= 35 | winner= 80.0% | FWD10 mean=  2.35% | median=  2.06% | MAE10 mean= -1.97%
+3 FAMILY         | N= 45 | winner= 13.3% | FWD10 mean= -5.09% | median= -3.03% | MAE10 mean= -7.96%
+
+G. BIAS10 + CROSS-FAMILY CONFIRMATION
+================================================================================================================================
+B10 TOTAL        | N= 81 | winner= 43.2% | FWD10 mean= -1.75% | median= -0.53% | MAE10 mean= -5.35%
+B10 + J          | N= 79 | winner= 41.8% | FWD10 mean= -1.88% | median= -0.66% | MAE10 mean= -5.39%
+B10 + DM         | N= 45 | winner= 13.3% | FWD10 mean= -5.09% | median= -3.03% | MAE10 mean= -7.96%
+B10 + J + DM     | N= 45 | winner= 13.3% | FWD10 mean= -5.09% | median= -3.03% | MAE10 mean= -7.96%
+
+H. INTERPRETATION GUARDRAILS
+================================================================================================================================
+1. J A-turn proxy is a research interview definition, not a production exit rule.
+2. BIAS10 and D-M use bearish zero-cross state changes.
+3. Warning frequency must be judged together with timing.
+4. Cross-family confirmation must show incremental outcome discrimination before receiving action authority.
+5. No single warning automatically means full exit.
+
+================================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.4 COMPLETE
+WHO CALLS FIRST? WHO IS RIGHT? WHO CONFIRMS THESIS INJURY BEFORE IT IS TOO LATE?
+================================================================================================================================

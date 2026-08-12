@@ -1,0 +1,111 @@
+==========================================================================================================================
+BASE RISK BUDGET DECISION SHEET v0.1
+MORNING LIGHT AMOUNT TRIPOD
+ENOUGH TO MATTER | SMALL ENOUGH TO SURVIVE | FLEXIBLE ENOUGH TO RESPOND
+==========================================================================================================================
+
+A. PARTICIPATION — ENOUGH TO MATTER
+==========================================================================================================================
+
+BASE RISK BUDGET LENS = 0.25%
+Geometry distance=2.0% | Raw position= 12.50%
+Geometry distance=3.0% | Raw position=  8.33%
+Geometry distance=5.0% | Raw position=  5.00%
+
+BASE RISK BUDGET LENS = 0.50%
+Geometry distance=2.0% | Raw position= 25.00%
+Geometry distance=3.0% | Raw position= 16.67%
+Geometry distance=5.0% | Raw position= 10.00%
+
+BASE RISK BUDGET LENS = 1.00%
+Geometry distance=2.0% | Raw position= 50.00%
+Geometry distance=3.0% | Raw position= 33.33%
+Geometry distance=5.0% | Raw position= 20.00%
+
+NOTE: This section measures deployment geometry only.
+It does NOT claim that 2%, 3%, or 5% is the correct prospective invalidation distance.
+
+B. SURVIVAL — SMALL ENOUGH TO SURVIVE
+==========================================================================================================================
+
+BASE RISK BUDGET LENS = 0.25%
+P95 failure streak (4) ->  1.00% risk capacity
+Historical max streak (5) ->  1.25%
+Historical same-day max (3) ->  0.75%
+40D max failure count (7) ->  1.75%
+
+BASE RISK BUDGET LENS = 0.50%
+P95 failure streak (4) ->  2.00% risk capacity
+Historical max streak (5) ->  2.50%
+Historical same-day max (3) ->  1.50%
+40D max failure count (7) ->  3.50%
+
+BASE RISK BUDGET LENS = 1.00%
+P95 failure streak (4) ->  4.00% risk capacity
+Historical max streak (5) ->  5.00%
+Historical same-day max (3) ->  3.00%
+40D max failure count (7) ->  7.00%
+
+NOTE: These are full-risk-consumption stress translations.
+They are NOT realized portfolio drawdowns.
+
+C. ADAPTATION — FLEXIBLE ENOUGH TO RESPOND
+==========================================================================================================================
+Initial Base Risk Budget is NOT a promise to maintain the original Amount.
+
+Dynamic evidence already under study:
+- Bias3 deterioration / zero-line state change
+- MTM3 deterioration / zero-line state change
+- D-M state change
+- Partial reduction
+- Same-day vs delayed action timing
+
+Adaptation has DOWNWARD authority when evidence weakens.
+Adaptation does NOT automatically earn an initial Risk Budget uplift.
+
+D. TRIPOD REVIEW
+==========================================================================================================================
+
+RISK BUDGET LENS = 0.25%
+Participation geometry: 3% lens ->   8.3% position | 5% lens ->   5.0% position
+Survival stress: P95 streak -> 1.00% | max streak -> 1.25% | same-day max -> 0.75% | 40D max -> 1.75%
+Adaptation: dynamic downward authority retained
+
+RISK BUDGET LENS = 0.50%
+Participation geometry: 3% lens ->  16.7% position | 5% lens ->  10.0% position
+Survival stress: P95 streak -> 2.00% | max streak -> 2.50% | same-day max -> 1.50% | 40D max -> 3.50%
+Adaptation: dynamic downward authority retained
+
+RISK BUDGET LENS = 1.00%
+Participation geometry: 3% lens ->  33.3% position | 5% lens ->  20.0% position
+Survival stress: P95 streak -> 4.00% | max streak -> 5.00% | same-day max -> 3.00% | 40D max -> 7.00%
+Adaptation: dynamic downward authority retained
+
+E. EVIDENCE BOUNDARY
+==========================================================================================================================
+PROVEN / SUPPORTED:
+- A2 earns a common Base Risk Permission.
+- Amount scales edge; Amount does not create edge.
+- Duplicate detections do not create extra capital permission.
+- Historical failure streaks and joint failures exist.
+- Cluster risk deserves ceiling authority.
+- Dynamic deterioration can justify action review/reduction.
+
+NOT YET PROVEN:
+- The production Base Risk Budget percentage.
+- A universal prospective Risk Distance.
+- 0.50% as the final default.
+- Any automatic Risk Budget uplift.
+- Any fixed Cluster haircut percentage.
+
+F. BOARD DECISION — v0.1
+==========================================================================================================================
+0.25%, 0.50%, and 1.00% remain scenario lenses.
+0.50% may remain a MIDDLE OPERATING LENS, but is NOT promoted to production.
+
+Next missing evidence:
+Define and validate a PROSPECTIVE, T_action-known Risk Distance before converting Base Risk Budget into live position size.
+
+==========================================================================================================================
+三足鼎立，缺一不穩；三足制衡，方能載重。
+==========================================================================================================================

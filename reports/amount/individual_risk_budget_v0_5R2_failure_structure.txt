@@ -1,0 +1,94 @@
+==========================================================================================================================
+INDIVIDUAL RISK BUDGET v0.5R2 — IDENTITY-CLEAN HISTORICAL FAILURE STRUCTURE
+SOURCE: v0.5R UNIQUE ECONOMIC DECISIONS
+FAILURE = FWD10 <= 0%
+NO RISK-BUDGET PARAMETER | NO RETURN OPTIMIZATION
+==========================================================================================================================
+
+A. HISTORICAL A2 BASELINE
+==========================================================================================================================
+A2 episodes = 118
+Calendar T_action buckets = 94
+Winners = 72
+Failures = 46
+Failure rate = 39.0%
+
+Failures by ticker:
+         N  Failures FailureRate
+Ticker
+0050    17         6       35.3%
+2330    26        10       38.5%
+2382    18         8       44.4%
+2454    15         8       53.3%
+2603    25         9       36.0%
+2882    17         5       29.4%
+
+B. SAME-DAY FAILURE CONCENTRATION
+==========================================================================================================================
+Multi-A2 T_action dates = 18
+Any failure = 72.2%
+Two-or-more failures = 27.8%
+All same-day A2 failed = 27.8%
+Max same-day failures = 3
+
+C. CHRONOLOGICAL FAILURE-BUCKET STREAKS
+==========================================================================================================================
+Failure bucket = at least one failed A2 on that T_action date.
+Number of failure streaks = 21
+Max streak = 5
+Median streak = 1.0
+95th percentile streak = 4.0
+
+Streak distribution:
+1    12
+2     3
+3     3
+4     2
+5     1
+
+D. ALL-FAIL BUCKET STREAKS
+==========================================================================================================================
+All-fail bucket = every A2 initiated on that date eventually failed.
+Max all-fail streak = 5
+95th percentile = 3.2
+
+All-fail streak distribution:
+1    12
+2     3
+3     3
+5     1
+
+E. ROLLING FAILURE CLUSTERS
+==========================================================================================================================
+ WindowDays  MaxFailures P95Failures MedianFailures
+         10            5         3.0            1.0
+         20            5         4.0            1.0
+         40            7         5.3            1.0
+
+F. WORST SAME-DAY FAILURE BUCKETS
+==========================================================================================================================
+  T_action  Events  Failures        Tickers FailureTickers
+2022-06-08       3         3 0050,2330,2454 0050,2330,2454
+2022-05-31       2         2      2330,2454      2330,2454
+2023-03-23       2         2      0050,2330      0050,2330
+2023-11-21       2         2      2382,2882      2382,2882
+2025-01-07       2         2      0050,2330      0050,2330
+2021-12-27       3         1 0050,2454,2882           2454
+2024-09-24       3         1 0050,2330,2603           2603
+2024-09-25       3         1 0050,2330,2603           2603
+2025-09-09       3         1 0050,2330,2454           2454
+2025-09-16       3         1 0050,2330,2454           2454
+2023-12-28       2         1      2330,2382           2330
+2024-09-20       2         1      2330,2603           2603
+
+G. INTERPRETATION GUARDRAIL
+==========================================================================================================================
+FWD10 <= 0 is an outcome label for this historical stress study; it is NOT a production exit rule.
+Same-day initiation is NOT identical to simultaneous open-risk failure.
+Rolling failure clusters measure temporal concentration, not portfolio drawdown.
+Risk Budget will be applied only AFTER the historical failure structure is measured.
+
+==========================================================================================================================
+INDIVIDUAL RISK BUDGET v0.5R2 COMPLETE
+QUESTION: HOW OFTEN DID A2 FAILURES ACTUALLY CLUSTER IN HISTORICAL TIME?
+==========================================================================================================================

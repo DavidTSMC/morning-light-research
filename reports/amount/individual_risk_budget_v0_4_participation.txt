@@ -1,0 +1,87 @@
+========================================================================================================================
+INDIVIDUAL RISK BUDGET v0.4 — PARTICIPATION EFFICIENCY
+ENOUGH TO MATTER × SMALL ENOUGH TO SURVIVE
+ONE ROW PER A2 EPISODE | NO DISTANCE-HIT SELECTION
+========================================================================================================================
+
+A. A2 OUTCOME BASELINE
+========================================================================================================================
+A2 episodes = 159
+10D winners = 98
+10D win rate = 61.6%
+Mean FWD10 = 1.03%
+Median FWD10 = 1.29%
+
+B. WINNER PARTICIPATION BASELINE
+========================================================================================================================
+Winner N = 98
+Winner mean FWD10 = 5.16%
+Winner median FWD10 = 3.91%
+
+C. TYPICAL WINNER CONTRIBUTION BY BUDGET × DISTANCE
+========================================================================================================================
+
+RISK BUDGET = 0.25%
+Distance=2.0% | Raw position= 12.50% | mean winner contribution= 0.645% | median winner contribution= 0.489%
+Distance=3.0% | Raw position=  8.33% | mean winner contribution= 0.430% | median winner contribution= 0.326%
+Distance=5.0% | Raw position=  5.00% | mean winner contribution= 0.258% | median winner contribution= 0.196%
+
+RISK BUDGET = 0.50%
+Distance=2.0% | Raw position= 25.00% | mean winner contribution= 1.290% | median winner contribution= 0.978%
+Distance=3.0% | Raw position= 16.67% | mean winner contribution= 0.860% | median winner contribution= 0.652%
+Distance=5.0% | Raw position= 10.00% | mean winner contribution= 0.516% | median winner contribution= 0.391%
+
+RISK BUDGET = 1.00%
+Distance=2.0% | Raw position= 50.00% | mean winner contribution= 2.580% | median winner contribution= 1.957%
+Distance=3.0% | Raw position= 33.33% | mean winner contribution= 1.720% | median winner contribution= 1.305%
+Distance=5.0% | Raw position= 20.00% | mean winner contribution= 1.032% | median winner contribution= 0.783%
+
+D. CONTRIBUTION PER 1 UNIT OF RISK BUDGET
+========================================================================================================================
+
+RISK DISTANCE = 2.0%
+Budget=0.25% | contribution= 0.645% | contribution/budget= 2.580
+Budget=0.50% | contribution= 1.290% | contribution/budget= 2.580
+Budget=1.00% | contribution= 2.580% | contribution/budget= 2.580
+
+RISK DISTANCE = 3.0%
+Budget=0.25% | contribution= 0.430% | contribution/budget= 1.720
+Budget=0.50% | contribution= 0.860% | contribution/budget= 1.720
+Budget=1.00% | contribution= 1.720% | contribution/budget= 1.720
+
+RISK DISTANCE = 5.0%
+Budget=0.25% | contribution= 0.258% | contribution/budget= 1.032
+Budget=0.50% | contribution= 0.516% | contribution/budget= 1.032
+Budget=1.00% | contribution= 1.032% | contribution/budget= 1.032
+
+E. TYPICAL WINNERS NEEDED TO REPAIR ONE FULL FAILURE
+========================================================================================================================
+
+RISK DISTANCE = 2.0%
+Budget=0.25% | typical winner contribution= 0.645% | winners_to_repair= 0.39
+Budget=0.50% | typical winner contribution= 1.290% | winners_to_repair= 0.39
+Budget=1.00% | typical winner contribution= 2.580% | winners_to_repair= 0.39
+
+RISK DISTANCE = 3.0%
+Budget=0.25% | typical winner contribution= 0.430% | winners_to_repair= 0.58
+Budget=0.50% | typical winner contribution= 0.860% | winners_to_repair= 0.58
+Budget=1.00% | typical winner contribution= 1.720% | winners_to_repair= 0.58
+
+RISK DISTANCE = 5.0%
+Budget=0.25% | typical winner contribution= 0.258% | winners_to_repair= 0.97
+Budget=0.50% | typical winner contribution= 0.516% | winners_to_repair= 0.97
+Budget=1.00% | typical winner contribution= 1.032% | winners_to_repair= 0.97
+
+F. LINEARITY CHECK
+========================================================================================================================
+If contribution/budget and winners_to_repair remain unchanged across 0.25/0.50/1.00 at the same distance, then Risk Budget does NOT create edge.
+
+It only scales the amplitude of an existing edge.
+
+In that case, Base Risk Budget should be chosen from portfolio damage capacity, not return optimization.
+
+========================================================================================================================
+INDIVIDUAL RISK BUDGET v0.4 COMPLETE
+ENOUGH TO MATTER. SMALL ENOUGH TO SURVIVE.
+FLEXIBLE ENOUGH TO RESPOND.
+========================================================================================================================

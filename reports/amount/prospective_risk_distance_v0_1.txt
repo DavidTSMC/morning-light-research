@@ -1,0 +1,67 @@
+============================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.1
+NORMAL BREATHING vs THESIS DETERIORATION
+SOURCE: IDENTITY-CLEAN UNIQUE A2 DECISIONS
+============================================================================================================================
+
+A. BASELINE
+============================================================================================================================
+Unique A2 decisions = 118
+Winner rate = 61.0%
+
+First deterioration:
+FirstDeterioration
+BIAS3    116
+MTM3       2
+
+B. DEEPEST PRICE BREATHING WHILE EVIDENCE STILL INTACT
+============================================================================================================================
+ALL:
+N=118 | mean= -0.23% | median= -0.05% | P25= -0.57% | P10= -1.38% | min= -2.86%
+
+WINNERS:
+N= 72 | mean= -0.15% | median=  0.00% | P25= -0.57% | P10= -1.25% | min= -2.42%
+
+FAILURES:
+N= 46 | mean= -0.36% | median= -0.12% | P25= -0.56% | P10= -1.64% | min= -2.86%
+
+C. PRICE DISTANCE AT FIRST REAL-TIME DETERIORATION
+============================================================================================================================
+CLOSE distance:
+N=118 | mean=  0.75% | median= -0.22% | P25= -1.38% | P10= -2.38% | min= -6.48%
+
+INTRADAY LOW distance:
+N=118 | mean=  0.33% | median= -0.55% | P25= -1.88% | P10= -2.89% | min= -6.48%
+
+By first signal:
+
+BIAS3
+ Close | N=116 | mean=  0.78% | median= -0.16% | P25= -1.40% | P10= -2.38% | min= -6.48%
+ Low   | N=116 | mean=  0.35% | median= -0.52% | P25= -1.89% | P10= -2.91% | min= -6.48%
+
+MTM3
+ Close | N=  2 | mean= -0.78% | median= -0.78% | P25= -1.01% | P10= -1.15% | min= -1.25%
+ Low   | N=  2 | mean= -1.14% | median= -1.14% | P25= -1.26% | P10= -1.34% | min= -1.39%
+
+D. FALSE-STOP CONTROL — EVENTUAL WINNERS
+============================================================================================================================
+Winner breathed <= -2% while evidence intact | N=  4 |   5.6%
+Winner breathed <= -3% while evidence intact | N=  0 |   0.0%
+Winner breathed <= -5% while evidence intact | N=  0 |   0.0%
+
+E. NO BEARISH ZERO-CROSS WITHIN 10D
+============================================================================================================================
+N = 0
+
+F. INTERPRETATION GUARDRAILS
+============================================================================================================================
+1. This study does NOT define a stop-loss.
+2. -2/-3/-5 are audit references only.
+3. First deterioration is a real-time observable state change, not future information.
+4. Breathing distance is descriptive evidence for a future prospective Risk Distance rule.
+5. Bias3/MTM3/D-M may trigger review or reduction; they do NOT automatically require full exit.
+
+============================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.1 COMPLETE
+QUESTION: WHERE DOES NORMAL BREATHING END AND THESIS DETERIORATION BEGIN?
+============================================================================================================================

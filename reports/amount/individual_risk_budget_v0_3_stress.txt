@@ -1,0 +1,105 @@
+====================================================================================================================
+INDIVIDUAL RISK BUDGET v0.3 — PORTFOLIO DAMAGE STRESS TEST
+COMMON BASE RISK BUDGET — SURVIVAL GEOMETRY
+NO RETURN OPTIMIZATION | NO PRODUCTION PARAMETER ASSIGNED
+====================================================================================================================
+
+A. SEQUENTIAL THESIS FAILURES
+====================================================================================================================
+
+BASE RISK BUDGET = 0.25%
+1 consecutive failures | equity= 99.750 | portfolio damage= -0.250%
+2 consecutive failures | equity= 99.501 | portfolio damage= -0.499%
+3 consecutive failures | equity= 99.252 | portfolio damage= -0.748%
+4 consecutive failures | equity= 99.004 | portfolio damage= -0.996%
+5 consecutive failures | equity= 98.756 | portfolio damage= -1.244%
+
+BASE RISK BUDGET = 0.50%
+1 consecutive failures | equity= 99.500 | portfolio damage= -0.500%
+2 consecutive failures | equity= 99.002 | portfolio damage= -0.998%
+3 consecutive failures | equity= 98.507 | portfolio damage= -1.493%
+4 consecutive failures | equity= 98.015 | portfolio damage= -1.985%
+5 consecutive failures | equity= 97.525 | portfolio damage= -2.475%
+
+BASE RISK BUDGET = 1.00%
+1 consecutive failures | equity= 99.000 | portfolio damage= -1.000%
+2 consecutive failures | equity= 98.010 | portfolio damage= -1.990%
+3 consecutive failures | equity= 97.030 | portfolio damage= -2.970%
+4 consecutive failures | equity= 96.060 | portfolio damage= -3.940%
+5 consecutive failures | equity= 95.099 | portfolio damage= -4.901%
+
+B. CONCURRENT OPEN-RISK FAILURE
+====================================================================================================================
+
+BASE RISK BUDGET = 0.25%
+1 simultaneous failures | open risk= 0.25% | capital remaining= 99.75%
+2 simultaneous failures | open risk= 0.50% | capital remaining= 99.50%
+3 simultaneous failures | open risk= 0.75% | capital remaining= 99.25%
+4 simultaneous failures | open risk= 1.00% | capital remaining= 99.00%
+5 simultaneous failures | open risk= 1.25% | capital remaining= 98.75%
+
+BASE RISK BUDGET = 0.50%
+1 simultaneous failures | open risk= 0.50% | capital remaining= 99.50%
+2 simultaneous failures | open risk= 1.00% | capital remaining= 99.00%
+3 simultaneous failures | open risk= 1.50% | capital remaining= 98.50%
+4 simultaneous failures | open risk= 2.00% | capital remaining= 98.00%
+5 simultaneous failures | open risk= 2.50% | capital remaining= 97.50%
+
+BASE RISK BUDGET = 1.00%
+1 simultaneous failures | open risk= 1.00% | capital remaining= 99.00%
+2 simultaneous failures | open risk= 2.00% | capital remaining= 98.00%
+3 simultaneous failures | open risk= 3.00% | capital remaining= 97.00%
+4 simultaneous failures | open risk= 4.00% | capital remaining= 96.00%
+5 simultaneous failures | open risk= 5.00% | capital remaining= 95.00%
+
+C. RECOVERY BURDEN AFTER CONCURRENT DAMAGE
+====================================================================================================================
+
+BASE RISK BUDGET = 0.25%
+2 failures | damage= 0.50% | gain needed to recover= 0.50%
+3 failures | damage= 0.75% | gain needed to recover= 0.76%
+4 failures | damage= 1.00% | gain needed to recover= 1.01%
+5 failures | damage= 1.25% | gain needed to recover= 1.27%
+
+BASE RISK BUDGET = 0.50%
+2 failures | damage= 1.00% | gain needed to recover= 1.01%
+3 failures | damage= 1.50% | gain needed to recover= 1.52%
+4 failures | damage= 2.00% | gain needed to recover= 2.04%
+5 failures | damage= 2.50% | gain needed to recover= 2.56%
+
+BASE RISK BUDGET = 1.00%
+2 failures | damage= 2.00% | gain needed to recover= 2.04%
+3 failures | damage= 3.00% | gain needed to recover= 3.09%
+4 failures | damage= 4.00% | gain needed to recover= 4.17%
+5 failures | damage= 5.00% | gain needed to recover= 5.26%
+
+D. CLUSTER / JOINT-DAMAGE GEOMETRY
+====================================================================================================================
+Budget=0.25% | 2 joint=0.50% | 3 joint=0.75% | 4 joint=1.00%
+Budget=0.50% | 2 joint=1.00% | 3 joint=1.50% | 4 joint=2.00%
+Budget=1.00% | 2 joint=2.00% | 3 joint=3.00% | 4 joint=4.00%
+
+E. INTERPRETATION
+====================================================================================================================
+Smaller Base Risk Budget improves survival but may reduce market participation.
+Larger Base Risk Budget improves deployment but consumes portfolio damage capacity faster.
+
+This test does NOT determine the optimal budget.
+It defines the damage geometry that any future budget decision must respect.
+
+Cluster and Aggregate Portfolio ceilings remain necessary because multiple A2 theses can fail together.
+
+Macro stress may later reduce permission, but is deliberately excluded from this test.
+
+F. GUARDRAILS
+====================================================================================================================
+1. Common Base Risk Budget != Final Position Size.
+2. Risk Budget != fixed stop-loss.
+3. Stress lenses are not production recommendations.
+4. No scenario is selected because it produces better returns.
+5. Survival capacity precedes return optimization.
+
+====================================================================================================================
+INDIVIDUAL RISK BUDGET v0.3 COMPLETE
+QUESTION: HOW MUCH DAMAGE CAN REPEATED A2 FAILURE CAUSE?
+====================================================================================================================

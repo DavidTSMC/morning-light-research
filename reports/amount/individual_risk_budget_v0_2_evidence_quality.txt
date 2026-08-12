@@ -1,0 +1,62 @@
+======================================================================================================================
+INDIVIDUAL RISK BUDGET v0.2 — A2 EVIDENCE QUALITY INTERVIEW
+QUESTION: DOES THE FROZEN EVENT FILE CONTAIN A REAL-TIME
+A2 QUALITY VARIABLE THAT CAN JUSTIFY DIFFERENT RISK BUDGETS?
+======================================================================================================================
+
+A. UNIQUE A2 EPISODES
+======================================================================================================================
+N = 62
+
+Ticker
+0050     6
+2330    14
+2382    11
+2454    11
+2603    15
+2882     5
+
+B. AVAILABLE COLUMNS
+======================================================================================================================
+Ticker                       | KNOWN OR STRUCTURAL
+T_action                     | KNOWN OR STRUCTURAL
+Threshold                    | FUTURE / POST-T_ACTION
+HitDate                      | FUTURE / POST-T_ACTION
+HitLag                       | FUTURE / POST-T_ACTION
+State                        | FUTURE / POST-T_ACTION
+Bias3DownSeen                | FUTURE / POST-T_ACTION
+MTM3DownSeen                 | FUTURE / POST-T_ACTION
+DMDownSeen                   | FUTURE / POST-T_ACTION
+Post1D                       | FUTURE / POST-T_ACTION
+Post3D                       | FUTURE / POST-T_ACTION
+Post5D                       | FUTURE / POST-T_ACTION
+Final10D_from_Taction        | FUTURE / POST-T_ACTION
+
+C. REAL-TIME QUALITY CANDIDATES IN FROZEN FILE
+======================================================================================================================
+NONE
+
+D. LOOK-AHEAD GUARDRAIL
+======================================================================================================================
+The following MUST NOT determine Risk Budget at T_action:
+- future threshold hit
+- HitLag
+- later Evidence deterioration state
+- Post1D / Post3D / Post5D
+- Final10D outcome
+
+These variables are useful for validation,
+but they are not available when the sizing decision is made.
+
+E. INTERVIEW DECISION
+======================================================================================================================
+NO REAL-TIME A2 QUALITY VARIABLE IS STORED IN THE FROZEN v0.3R EVENT FILE.
+
+Therefore v0.2 does NOT invent one.
+Current evidence supports a COMMON BASE RISK BUDGET for A2, subject to downstream ceilings.
+If differentiated A2 budgets are desired, a new prospective real-time evidence feature must first be defined and validated.
+
+======================================================================================================================
+INDIVIDUAL RISK BUDGET v0.2 COMPLETE
+NO LOOK-AHEAD INFORMATION MAY EARN MORE CAPITAL.
+======================================================================================================================

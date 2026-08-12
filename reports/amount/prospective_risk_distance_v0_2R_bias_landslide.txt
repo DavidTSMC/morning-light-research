@@ -1,0 +1,87 @@
+================================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.2R
+BIAS LANDSLIDE CASCADE
+BIAS3 -> BIAS5 -> BIAS10 -> BIAS20
+================================================================================================================================
+
+A. BEARISH ZERO-CROSS FREQUENCY WITHIN 10D
+================================================================================================================================
+Bias3  | N=118/118 | 100.0%
+Bias5  | N=115/118 |  97.5%
+Bias10 | N= 81/118 |  68.6%
+Bias20 | N= 41/118 |  34.7%
+
+B. WARNING FREQUENCY — WINNERS vs FAILURES
+================================================================================================================================
+Bias3  | Winners=100.0% | Failures=100.0% | Gap=   0.0pp
+Bias5  | Winners= 95.8% | Failures=100.0% | Gap=   4.2pp
+Bias10 | Winners= 48.6% | Failures=100.0% | Gap=  51.4pp
+Bias20 | Winners=  8.3% | Failures= 76.1% | Gap=  67.8pp
+
+C. LANDSLIDE DEPTH
+================================================================================================================================
+NO B3 WARNING        | N=0
+B3 ONLY              | N=  3 | winner=100.0% | FWD10 mean= 14.61% | median=  8.44% | MAE10 mean=  0.63% | median=  0.55%
+B3 -> B5             | N= 34 | winner=100.0% | FWD10 mean=  6.84% | median=  6.42% | MAE10 mean= -0.72% | median= -0.53%
+B3 -> B5 -> B10      | N= 40 | winner= 72.5% | FWD10 mean=  1.67% | median=  1.36% | MAE10 mean= -2.42% | median= -1.78%
+B3 -> B5 -> B10 -> B20 | N= 41 | winner= 14.6% | FWD10 mean= -5.08% | median= -3.74% | MAE10 mean= -8.21% | median= -7.34%
+
+D. FIRST CROSS TIMING
+================================================================================================================================
+Bias3  | N=118 | median= 3.0D | mean= 3.2D
+Bias5  | N=115 | median= 4.0D | mean= 4.7D
+Bias10 | N= 81 | median= 5.0D | mean= 5.4D
+Bias20 | N= 41 | median= 6.0D | mean= 5.7D
+
+E. PRICE DISTANCE WHEN EACH LAYER TRIGGERS
+================================================================================================================================
+
+Bias3
+ Close | N=118 | median= -0.16% | mean=  0.77%
+ Low   | N=118 | median= -0.52% | mean=  0.35%
+
+Bias5
+ Close | N=115 | median= -0.78% | mean=  0.25%
+ Low   | N=115 | median= -1.07% | mean= -0.12%
+
+Bias10
+ Close | N= 81 | median= -1.99% | mean= -2.13%
+ Low   | N= 81 | median= -2.23% | mean= -2.49%
+
+Bias20
+ Close | N= 41 | median= -4.66% | mean= -4.88%
+ Low   | N= 41 | median= -5.26% | mean= -5.30%
+
+F. ORDERED CASCADE
+================================================================================================================================
+ORDERED 3 -> 5       | N=114 | winner= 59.6% | FWD10 mean=  0.75% | median=  1.29% | MAE10 mean= -4.01% | median= -2.47%
+ORDERED 3 -> 5 -> 10 | N= 79 | winner= 43.0% | FWD10 mean= -1.75% | median= -0.53% | MAE10 mean= -5.35% | median= -3.69%
+ORDERED 3 -> 5 -> 10 -> 20 | N= 39 | winner= 12.8% | FWD10 mean= -5.26% | median= -3.74% | MAE10 mean= -8.36% | median= -7.34%
+
+G. EVENTUAL WINNERS THAT STILL TRIGGERED EACH LAYER
+================================================================================================================================
+Bias3  warning among winners | N= 72/72 | 100.0%
+Bias5  warning among winners | N= 69/72 |  95.8%
+Bias10 warning among winners | N= 35/72 |  48.6%
+Bias20 warning among winners | N=  6/72 |   8.3%
+
+H. DOES DEEPER CASCADE LOOK WORSE?
+================================================================================================================================
+ CascadeDepth  N WinnerRate MeanFWD10 MeanMAE10
+            1  3     100.0%    14.61%     0.63%
+            2 34     100.0%     6.84%    -0.72%
+            3 40      72.5%     1.67%    -2.42%
+            4 41      14.6%    -5.08%    -8.21%
+
+I. INTERPRETATION GUARDRAILS
+================================================================================================================================
+1. Bias3/Bias5/Bias10/Bias20 are warning layers, not automatic exits.
+2. Bias20 is NOT assumed to mean thesis invalidation.
+3. A deeper cascade must show incremental outcome discrimination before receiving authority.
+4. Longer horizons may improve specificity at the cost of later warning.
+5. No fixed stop-loss percentage is created here.
+
+================================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.2R COMPLETE
+FIRST MUDDY WATER IS NOT A LANDSLIDE. THE QUESTION IS WHETHER THE FLOW DEEPENS FROM BIAS3 TO BIAS20.
+================================================================================================================================

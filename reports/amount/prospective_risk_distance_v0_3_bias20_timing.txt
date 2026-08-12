@@ -1,0 +1,63 @@
+==============================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.3
+BIAS20 LATE-WARNING / REBOUND AUDIT
+QUESTION: IS BIAS20 AN ACTION SIGNAL OR A DISASTER INSPECTOR?
+==============================================================================================================================
+
+A. BIAS20 SAMPLE
+==============================================================================================================================
+Bias20 trigger cases = 41
+Winners = 6
+Failures = 35
+Winner rate = 14.6%
+
+B. HOW MUCH DAMAGE HAD ALREADY OCCURRED AT BIAS20?
+==============================================================================================================================
+B20 close distance | N= 41 | mean= -4.88 | median= -4.66 | P25= -6.64 | P75= -2.57
+B20 low distance   | N= 41 | mean= -5.30 | median= -5.26 | P25= -7.19 | P75= -2.87
+10D MAE            | N= 41 | mean= -8.21 | median= -7.34 | P25= -9.46 | P75= -3.81
+Damage already realized % | N= 41 | mean= 76.19 | median= 80.77 | P25= 60.00 | P75= 96.71
+
+10D local low already seen by B20 = 29.3%
+
+C. COST OF WAITING FROM BIAS10 TO BIAS20
+==============================================================================================================================
+Cases with ordered B10 -> B20 = 41
+Lag days | N= 41 | mean=  1.51 | median=  1.00 | P25=  0.00 | P75=  3.00
+Additional CLOSE move | N= 41 | mean= -1.24 | median= -0.89 | P25= -2.30 | P75=  0.00
+Additional LOW move   | N= 41 | mean= -1.34 | median= -0.54 | P25= -2.30 | P75=  0.00
+
+D. WHAT HAPPENS AFTER BIAS20?
+==============================================================================================================================
+1D return | N= 41 | mean= -0.58 | median=  0.35 | P25= -1.50 | P75=  1.64
+1D bounce rate = 56.1%
+3D return | N= 41 | mean=  0.01 | median=  0.00 | P25= -1.54 | P75=  2.79
+3D bounce rate = 48.8%
+5D return | N= 41 | mean= -0.08 | median=  0.54 | P25= -2.41 | P75=  3.15
+5D bounce rate = 61.0%
+
+E. POST-B20 — WINNERS vs FAILURES
+==============================================================================================================================
+
+WINNERS
+ 1D | N=  6 | mean=  2.00 | median=  2.27 | P25=  1.04 | P75=  2.99 | bounce=83.3%
+ 3D | N=  6 | mean=  7.04 | median=  4.96 | P25=  3.27 | P75=  8.83 | bounce=100.0%
+ 5D | N=  6 | mean=  8.46 | median=  7.54 | P25=  3.89 | P75= 11.00 | bounce=100.0%
+
+FAILURES
+ 1D | N= 35 | mean= -1.02 | median=  0.32 | P25= -1.62 | P75=  1.20 | bounce=51.4%
+ 3D | N= 35 | mean= -1.20 | median= -0.64 | P25= -2.19 | P75=  1.37 | bounce=40.0%
+ 5D | N= 35 | mean= -1.54 | median=  0.54 | P25= -3.13 | P75=  2.72 | bounce=54.3%
+
+F. INTERPRETATION GUARDRAIL
+==============================================================================================================================
+1. Bias20 discrimination was established in v0.2R; this test asks whether that information arrives in time.
+2. A high damage-already-realized percentage suggests diagnostic value may exceed action value.
+3. A high post-B20 bounce rate warns against treating Bias20 as an automatic exit.
+4. Continued negative 1D/3D/5D returns after B20 would support additional action value.
+5. No Bias horizon receives production authority from this test alone.
+
+==============================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.3 COMPLETE
+EARLY ENOUGH TO ACT. RELIABLE ENOUGH TO TRUST.
+==============================================================================================================================
