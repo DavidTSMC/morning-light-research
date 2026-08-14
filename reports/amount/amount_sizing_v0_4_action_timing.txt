@@ -1,0 +1,145 @@
+======================================================================================================================
+AMOUNT SIZING v0.4 — INVALIDATION -> ACTION TIMING
+SOURCE: FROZEN v0.3R EVENT CSV
+NO INDICATORS OR DISTANCE THRESHOLDS RECOMPUTED
+======================================================================================================================
+
+A. LOCKED EVENT COUNTS
+======================================================================================================================
+State      DM_STATE_CHANGE  EARLY_WARNING  INTACT  MOMENTUM_DETERIORATION
+Threshold                                                                
+-5                      17              1       0                      25
+-3                      15              7       0                      42
+-2                      10             13       9                      51
+
+B. POST-HIT PATH — WHAT HAPPENS IF WE WAIT?
+======================================================================================================================
+
+THRESHOLD -2%
+--------------------------------------------------------------------------------
+
+INTACT | N=9
+WAIT 1D | mean=  0.66% | median= -0.32% | up= 44.4% | down= 55.6%
+WAIT 3D | mean= -0.36% | median= -1.28% | up= 44.4% | down= 55.6%
+WAIT 5D | mean=  1.94% | median= -0.85% | up= 44.4% | down= 55.6%
+
+EARLY_WARNING | N=13
+WAIT 1D | mean= -0.78% | median= -0.45% | up= 46.2% | down= 53.8%
+WAIT 3D | mean= -1.98% | median= -2.71% | up= 23.1% | down= 69.2%
+WAIT 5D | mean= -0.18% | median= -2.35% | up= 23.1% | down= 61.5%
+
+MOMENTUM_DETERIORATION | N=51
+WAIT 1D | mean=  0.27% | median=  0.33% | up= 54.9% | down= 31.4%
+WAIT 3D | mean= -0.40% | median= -0.52% | up= 39.2% | down= 54.9%
+WAIT 5D | mean= -1.52% | median=  0.24% | up= 51.0% | down= 49.0%
+
+DM_STATE_CHANGE | N=10
+WAIT 1D | mean= -0.28% | median= -0.21% | up= 50.0% | down= 50.0%
+WAIT 3D | mean=  0.61% | median=  0.87% | up= 60.0% | down= 40.0%
+WAIT 5D | mean=  1.07% | median=  1.04% | up= 60.0% | down= 40.0%
+
+THRESHOLD -3%
+--------------------------------------------------------------------------------
+
+EARLY_WARNING | N=7
+WAIT 1D | mean= -2.36% | median= -2.99% | up= 14.3% | down= 85.7%
+WAIT 3D | mean= -2.89% | median= -3.02% | up= 14.3% | down= 85.7%
+WAIT 5D | mean= -0.73% | median= -0.43% | up= 42.9% | down= 57.1%
+
+MOMENTUM_DETERIORATION | N=42
+WAIT 1D | mean=  0.02% | median=  0.00% | up= 45.2% | down= 42.9%
+WAIT 3D | mean= -2.61% | median= -0.42% | up= 42.9% | down= 50.0%
+WAIT 5D | mean= -1.86% | median=  0.98% | up= 57.1% | down= 42.9%
+
+DM_STATE_CHANGE | N=15
+WAIT 1D | mean=  0.03% | median=  0.53% | up= 53.3% | down= 46.7%
+WAIT 3D | mean=  1.59% | median=  1.39% | up= 60.0% | down= 20.0%
+WAIT 5D | mean=  1.70% | median=  1.39% | up= 60.0% | down= 40.0%
+
+THRESHOLD -5%
+--------------------------------------------------------------------------------
+
+EARLY_WARNING | N=1
+WAIT 1D | mean= -4.85% | median= -4.85% | up=  0.0% | down=100.0%
+WAIT 3D | mean= -3.13% | median= -3.13% | up=  0.0% | down=100.0%
+WAIT 5D | mean= -2.35% | median= -2.35% | up=  0.0% | down=100.0%
+
+MOMENTUM_DETERIORATION | N=25
+WAIT 1D | mean=  0.31% | median=  1.08% | up= 56.0% | down= 32.0%
+WAIT 3D | mean= -0.28% | median=  0.00% | up= 44.0% | down= 48.0%
+WAIT 5D | mean= -0.90% | median=  0.49% | up= 56.0% | down= 44.0%
+
+DM_STATE_CHANGE | N=17
+WAIT 1D | mean= -4.53% | median= -0.39% | up= 35.3% | down= 64.7%
+WAIT 3D | mean= -1.75% | median=  0.46% | up= 52.9% | down= 47.1%
+WAIT 5D | mean= -1.73% | median=  1.83% | up= 58.8% | down= 41.2%
+
+C. RECOVERY RATE AFTER HIT
+======================================================================================================================
+
+THRESHOLD -2%
+INTACT                   | N=  9 | 1D= 44.4% | 3D= 44.4% | 5D= 44.4%
+EARLY_WARNING            | N= 13 | 1D= 46.2% | 3D= 23.1% | 5D= 23.1%
+MOMENTUM_DETERIORATION   | N= 51 | 1D= 54.9% | 3D= 39.2% | 5D= 51.0%
+DM_STATE_CHANGE          | N= 10 | 1D= 50.0% | 3D= 60.0% | 5D= 60.0%
+
+THRESHOLD -3%
+EARLY_WARNING            | N=  7 | 1D= 14.3% | 3D= 14.3% | 5D= 42.9%
+MOMENTUM_DETERIORATION   | N= 42 | 1D= 45.2% | 3D= 42.9% | 5D= 57.1%
+DM_STATE_CHANGE          | N= 15 | 1D= 53.3% | 3D= 60.0% | 5D= 60.0%
+
+THRESHOLD -5%
+EARLY_WARNING            | N=  1 | 1D=  0.0% | 3D=  0.0% | 5D=  0.0%
+MOMENTUM_DETERIORATION   | N= 25 | 1D= 56.0% | 3D= 44.0% | 5D= 56.0%
+DM_STATE_CHANGE          | N= 17 | 1D= 35.3% | 3D= 52.9% | 5D= 58.8%
+
+D. DOES WAITING BEAT IMMEDIATE EXIT?
+======================================================================================================================
+
+THRESHOLD -2%
+INTACT                   | N=  9 | 1D wait-beats-exit= 44.4% | 3D wait-beats-exit= 44.4% | 5D wait-beats-exit= 44.4%
+EARLY_WARNING            | N= 13 | 1D wait-beats-exit= 46.2% | 3D wait-beats-exit= 23.1% | 5D wait-beats-exit= 23.1%
+MOMENTUM_DETERIORATION   | N= 51 | 1D wait-beats-exit= 54.9% | 3D wait-beats-exit= 39.2% | 5D wait-beats-exit= 51.0%
+DM_STATE_CHANGE          | N= 10 | 1D wait-beats-exit= 50.0% | 3D wait-beats-exit= 60.0% | 5D wait-beats-exit= 60.0%
+
+THRESHOLD -3%
+EARLY_WARNING            | N=  7 | 1D wait-beats-exit= 14.3% | 3D wait-beats-exit= 14.3% | 5D wait-beats-exit= 42.9%
+MOMENTUM_DETERIORATION   | N= 42 | 1D wait-beats-exit= 45.2% | 3D wait-beats-exit= 42.9% | 5D wait-beats-exit= 57.1%
+DM_STATE_CHANGE          | N= 15 | 1D wait-beats-exit= 53.3% | 3D wait-beats-exit= 60.0% | 5D wait-beats-exit= 60.0%
+
+THRESHOLD -5%
+EARLY_WARNING            | N=  1 | 1D wait-beats-exit=  0.0% | 3D wait-beats-exit=  0.0% | 5D wait-beats-exit=  0.0%
+MOMENTUM_DETERIORATION   | N= 25 | 1D wait-beats-exit= 56.0% | 3D wait-beats-exit= 44.0% | 5D wait-beats-exit= 56.0%
+DM_STATE_CHANGE          | N= 17 | 1D wait-beats-exit= 35.3% | 3D wait-beats-exit= 52.9% | 5D wait-beats-exit= 58.8%
+
+E. FALSE-EXIT CONTROL — -2% + INTACT
+======================================================================================================================
+N = 9
+Original 10D from T_action | mean=  4.35% | median=  1.29% | winner= 66.7%
+After hit WAIT 1D | mean=  0.66% | median= -0.32% | recovery= 44.4%
+After hit WAIT 3D | mean= -0.36% | median= -1.28% | recovery= 44.4%
+After hit WAIT 5D | mean=  1.94% | median= -0.85% | recovery= 44.4%
+
+F. DETERIORATED STATES — ACTION TIMING SUMMARY
+======================================================================================================================
+
+THRESHOLD -2% | N=61
+WAIT 1D | mean=  0.18% | median=  0.33% | wait-beats-exit= 54.1%
+WAIT 3D | mean= -0.23% | median= -0.32% | wait-beats-exit= 42.6%
+WAIT 5D | mean= -1.09% | median=  0.54% | wait-beats-exit= 52.5%
+
+THRESHOLD -3% | N=57
+WAIT 1D | mean=  0.02% | median=  0.00% | wait-beats-exit= 47.4%
+WAIT 3D | mean= -1.50% | median=  0.00% | wait-beats-exit= 47.4%
+WAIT 5D | mean= -0.92% | median=  1.25% | wait-beats-exit= 57.9%
+
+THRESHOLD -5% | N=42
+WAIT 1D | mean= -1.65% | median=  0.00% | wait-beats-exit= 47.6%
+WAIT 3D | mean= -0.88% | median=  0.00% | wait-beats-exit= 47.6%
+WAIT 5D | mean= -1.24% | median=  0.51% | wait-beats-exit= 57.1%
+
+======================================================================================================================
+AMOUNT SIZING v0.4 COMPLETE
+DIAGNOSIS DOES NOT AUTOMATICALLY DETERMINE EXECUTION TIMING.
+A WARNING EARNS AN ACTION TEST; IT DOES NOT AUTOMATICALLY EARN AN EXIT.
+======================================================================================================================

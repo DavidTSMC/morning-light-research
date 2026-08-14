@@ -1,0 +1,58 @@
+==============================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.2
+WHEN DOES A WARNING BECOME AN INJURY?
+BIAS3 PERSISTENCE + MTM3 / D-M CASCADE
+==============================================================================================================================
+
+A. WARNING BASELINE
+==============================================================================================================================
+Episodes with Bias3 warning = 118
+Winner rate = 61.0%
+
+State counts:
+State
+CASCADE_2         68
+CASCADE_3         45
+TRANSIENT_BIAS     5
+
+B. BIAS3 WARNING PERSISTENCE
+==============================================================================================================================
+1 DAY / TRANSIENT  | N= 44 | winner= 70.5% | FWD10 mean=  3.12% | median=  2.84% | postWarnMAE mean= -0.81% | median= -0.98%
+2 DAYS             | N= 22 | winner= 72.7% | FWD10 mean=  3.28% | median=  3.40% | postWarnMAE mean= -2.49% | median= -2.74%
+3+ DAYS            | N= 52 | winner= 48.1% | FWD10 mean= -1.44% | median= -0.57% | postWarnMAE mean= -4.99% | median= -3.48%
+
+C. CASCADE DEPTH
+==============================================================================================================================
+BIAS ONLY          | N=  5 | winner=100.0% | FWD10 mean= 11.86% | median=  8.44% | postWarnMAE mean=  3.63% | median=  3.02%
+BIAS + >=1         | N= 68 | winner= 89.7% | FWD10 mean=  4.54% | median=  3.86% | postWarnMAE mean= -0.14% | median= -0.91%
+BIAS + MTM + DM    | N= 45 | winner= 13.3% | FWD10 mean= -5.19% | median= -3.03% | postWarnMAE mean= -7.96% | median= -7.19%
+
+D. RECOVERY SPEED
+==============================================================================================================================
+RECOVER NEXT DAY   | N= 43 | winner= 69.8% | FWD10 mean=  2.92% | median=  2.80% | postWarnMAE mean= -1.08% | median= -1.07%
+RECOVER 2-3D       | N= 47 | winner= 68.1% | FWD10 mean=  2.35% | median=  2.46% | postWarnMAE mean= -2.68% | median= -2.53%
+RECOVER >=4D/NONE  | N= 28 | winner= 35.7% | FWD10 mean= -3.62% | median= -2.09% | postWarnMAE mean= -6.33% | median= -5.77%
+
+E. FOLLOW-THROUGH TIMING AFTER BIAS3 WARNING
+==============================================================================================================================
+MTM3 follow | N=113 | median lag=1.0D | mean lag=1.3D
+D-M follow  | N=45 | median lag=3.0D | mean lag=3.9D
+
+F. DESCRIPTIVE STATE OUTCOME
+==============================================================================================================================
+TRANSIENT_BIAS     | N=  5 | winner=100.0% | FWD10 mean= 11.86% | median=  8.44% | postWarnMAE mean=  3.63% | median=  3.02%
+CASCADE_2          | N= 68 | winner= 89.7% | FWD10 mean=  4.54% | median=  3.86% | postWarnMAE mean= -0.14% | median= -0.91%
+CASCADE_3          | N= 45 | winner= 13.3% | FWD10 mean= -5.19% | median= -3.03% | postWarnMAE mean= -7.96% | median= -7.19%
+
+G. INTERPRETATION GUARDRAILS
+==============================================================================================================================
+1. State labels are descriptive research buckets, NOT production exit rules.
+2. Bias3 warning retains Early-Warning authority only.
+3. Persistence and cascade are tested for incremental information before receiving action authority.
+4. No fixed price stop is inferred from this study.
+5. All warning/cascade observations are knowable in real time as they occur.
+
+==============================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.2 COMPLETE
+BIAS3 CALLS THE DOCTOR; PERSISTENCE AND CASCADE DETERMINE WHETHER THE PATIENT IS ACTUALLY GETTING SICKER.
+==============================================================================================================================

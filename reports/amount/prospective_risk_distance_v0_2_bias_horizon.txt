@@ -1,0 +1,68 @@
+============================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.2
+BIAS MULTI-HORIZON VITAL SIGNS
+BIAS3 -> BIAS5 -> BIAS10
+============================================================================================================================
+
+A. BEARISH ZERO-CROSS FREQUENCY WITHIN 10D
+============================================================================================================================
+Bias3  | N=118 / 118 | 100.0%
+Bias5  | N=115 / 118 |  97.5%
+Bias10 | N= 81 / 118 |  68.6%
+
+B. CROSS FREQUENCY — WINNERS vs FAILURES
+============================================================================================================================
+Bias3  | Winners=100.0% | Failures=100.0%
+Bias5  | Winners= 95.8% | Failures=100.0%
+Bias10 | Winners= 48.6% | Failures=100.0%
+
+C. BIAS FAMILY CASCADE DEPTH
+============================================================================================================================
+B3_ONLY          | N=  3 | winner=100.0% | FWD10 mean= 14.61% | median=  8.44% | MAE10 mean=  0.63%
+B3_B5            | N= 34 | winner=100.0% | FWD10 mean=  6.84% | median=  6.42% | MAE10 mean= -0.72%
+B3_B5_B10        | N= 81 | winner= 43.2% | FWD10 mean= -1.75% | median= -0.53% | MAE10 mean= -5.35%
+
+D. FIRST CROSS TIMING
+============================================================================================================================
+Bias3  | N=118 | median= 3.0D | mean= 3.2D
+Bias5  | N=115 | median= 4.0D | mean= 4.7D
+Bias10 | N= 81 | median= 5.0D | mean= 5.4D
+
+E. PRICE DISTANCE AT FIRST CROSS
+============================================================================================================================
+
+Bias3
+ Close | median= -0.16% | mean=  0.77%
+ Low   | median= -0.52% | mean=  0.35%
+
+Bias5
+ Close | median= -0.78% | mean=  0.25%
+ Low   | median= -1.07% | mean= -0.12%
+
+Bias10
+ Close | median= -1.99% | mean= -2.13%
+ Low   | median= -2.23% | mean= -2.49%
+
+F. ORDERED CASCADE
+============================================================================================================================
+ORDERED B3->B5   | N=114 | winner= 59.6% | FWD10 mean=  0.75% | median=  1.29% | MAE10 mean= -4.01%
+ORDERED 3->5->10 | N= 79 | winner= 43.0% | FWD10 mean= -1.75% | median= -0.53% | MAE10 mean= -5.35%
+
+G. EVENTUAL WINNERS THAT STILL TRIGGERED EACH WARNING
+============================================================================================================================
+Bias3  warning among winners | N= 72 / 72 | 100.0%
+Bias5  warning among winners | N= 69 / 72 |  95.8%
+Bias10 warning among winners | N= 35 / 72 |  48.6%
+
+H. INTERPRETATION GUARDRAILS
+============================================================================================================================
+1. Bias3/Bias5/Bias10 are being interviewed, not promoted.
+2. A bearish zero-cross is a warning event, not an automatic exit.
+3. Longer Bias horizons may reduce noise but may also warn later.
+4. Cascade depth must show incremental outcome discrimination before earning action authority.
+5. No fixed price stop is created by this study.
+
+============================================================================================================================
+PROSPECTIVE RISK DISTANCE v0.2 COMPLETE
+BIAS3 MAY HEAR THE FIRST WHEEZE; BIAS5 AND BIAS10 ARE TESTED TO SEE WHETHER THE BREATHING PROBLEM IS ACTUALLY DEEPENING.
+============================================================================================================================
