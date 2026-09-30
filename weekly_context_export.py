@@ -20,26 +20,28 @@ ALLOWED = {
     "W Trend": {"↑多", "→轉", "↓弱"},
     "W Pulse": {"擴", "縮", "修", "弱"},
     "W Loc": {"低", "中", "高", "極"},
-    "Resonance": {"◎齊", "○同", "△轉", "△錯", "※衝"},
+    "Resonance": {"◎齊", "○同", "△轉", "△錯", "×衝"},
 }
 
 
 def candidate() -> dict:
-    raw = build_watch_map()
+    today = datetime.now(ZoneInfo("Asia/Taipei")).date()
+    raw = build_watch_map(as_of=today)
     expected = [str(ticker) for ticker in TICKERS]
     actual = [str(row["ticker"]) for row in raw]
     if len(expected) != 11 or actual != expected:
         raise ValueError(f"Ticker order mismatch: {actual}")
 
-    today = datetime.now(ZoneInfo("Asia/Taipei")).date()
     weekly_dates = {date.fromisoformat(str(row["weekly_asof"])) for row in raw}
     daily_dates = {date.fromisoformat(str(row["daily_asof"])) for row in raw}
     if len(weekly_dates) != 1:
         raise ValueError(f"Weekly dates differ: {weekly_dates}")
     weekly_asof = weekly_dates.pop()
-    if weekly_asof > today or (today - weekly_asof).days > 10:
-        raise ValueError(f"Completed week is not recent: {weekly_asof}")
-    if any(d < weekly_asof or d > today or (today - d).days > 7 for d in daily_dates):
+    import pandas as pd
+    expected_week = (pd.Timestamp(today).to_period("W-FRI").start_time - pd.Timedelta(days=1)).date()
+    if weekly_asof != expected_week:
+        raise ValueError(f"Need completed week {expected_week}; found {weekly_asof}")
+    if any(d < weekly_asof or d >= today or (today - d).days > 7 for d in daily_dates):
         raise ValueError(f"Daily source dates need review: {daily_dates}")
 
     rows = []
@@ -53,7 +55,8 @@ def candidate() -> dict:
         rows.append(output)
     return {
         "weekly_asof": weekly_asof.isoformat(),
-        "source": "Morning Light Research completed-week calculation; candidate for review",
+        "source": "Morning Light Research completed-week calculation; validated candidate",
+        "daily_asof_by_ticker": {str(row["ticker"]): str(row["daily_asof"]) for row in raw},
         "rows": rows,
     }
 

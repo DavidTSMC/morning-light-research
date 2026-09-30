@@ -26,7 +26,12 @@ def to_weekly(df: pd.DataFrame) -> pd.DataFrame:
         subset=["Open", "High", "Low", "Close"]
     )
 
-def completed_weekly(weekly, last_daily_date):
+def completed_weekly(weekly, last_daily_date, *, as_of=None):
+    # Production cutoff uses the Taipei calendar date. Friday becomes complete
+    # on Saturday; a Friday run conservatively excludes that same Friday.
+    # Keep the existing historical/replay behavior when as_of is omitted.
+    if as_of is not None:
+        return weekly[weekly.index < pd.Timestamp(as_of).normalize()]
     current_week_end = (
         pd.Timestamp(last_daily_date)
         .to_period("W-FRI")

@@ -59,8 +59,8 @@ def download_to_stage(symbol: str, first_date: pd.Timestamp, target: Path, today
 
     fetched = yf.download(
         symbol,
-        start=(first_date - pd.Timedelta(days=7)).strftime("%Y-%m-%d"),
-        end=(today + timedelta(days=1)).isoformat(),
+        start=first_date.strftime("%Y-%m-%d"),
+        end=today.isoformat(),  # exclusive: never download today's partial candle
         interval="1d",
         auto_adjust=False,
         progress=False,
@@ -90,8 +90,8 @@ def compare(old: pd.DataFrame, fresh: pd.DataFrame, symbol: str, today) -> str:
         raise ValueError(f"{symbol}: historical start would be lost ({old_first.date()} -> {new_first.date()})")
     if len(fresh) < len(old):
         raise ValueError(f"{symbol}: row count would shrink ({len(old)} -> {len(fresh)})")
-    if new_last <= old_last:
-        raise ValueError(f"{symbol}: no newer day ({old_last.date()} -> {new_last.date()})")
+    if new_last < old_last:
+        raise ValueError(f"{symbol}: latest date would regress ({old_last.date()} -> {new_last.date()})")
     if new_last.date() > today or (today - new_last.date()).days > 7:
         raise ValueError(f"{symbol}: latest date {new_last.date()} needs review")
     common = old.index.intersection(fresh.index)

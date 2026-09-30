@@ -150,6 +150,7 @@ def resonance_alignment_label(dr, wr) -> str:
 
 def build_r5_location_thresholds(
     tickers=TICKERS,
+    *, as_of=None,
 ) -> dict:
     """
     Build common pooled R5 thresholds from Completed Weeks only.
@@ -166,7 +167,7 @@ def build_r5_location_thresholds(
         weekly = to_weekly(daily)
         completed = completed_weekly(
             weekly,
-            daily.index[-1]
+            daily.index[-1], as_of=as_of
         ).copy()
 
         close = completed["Close"].astype(float)
@@ -211,6 +212,7 @@ def location_label(r, thresholds: dict) -> str:
 def build_weekly_clinical_context(
     ticker: str,
     thresholds: dict | None = None,
+    *, as_of=None,
 ) -> dict:
     """
     Build final Weekly Clinical Context for one ticker.
@@ -227,14 +229,20 @@ def build_weekly_clinical_context(
     weekly = to_weekly(daily)
     completed = completed_weekly(
         weekly,
-        daily.index[-1]
+        daily.index[-1], as_of=as_of
     ).copy()
 
     w = enrich(completed)
     wr = w.iloc[-1]
 
+    fields = ["DMI_OSC", "Bias3", "MTM3", "DM", "dDM", "R5"]
+    for clock, row in (("DAY", dr), ("WEEK", wr)):
+        values = pd.to_numeric(row[fields], errors="coerce")
+        if values.isna().any() or values.isin([float("inf"), float("-inf")]).any():
+            raise ValueError(f"{ticker}: incomplete {clock} evidence; need more valid history")
+
     if thresholds is None:
-        thresholds = build_r5_location_thresholds()
+        thresholds = build_r5_location_thresholds(as_of=as_of)
 
     return {
         "ticker": ticker,
@@ -249,16 +257,18 @@ def build_weekly_clinical_context(
 
 def build_watch_map(
     tickers=TICKERS,
+    *, as_of=None,
 ) -> list[dict]:
     """
     Build 11-stock rehearsal / regression output.
     """
-    thresholds = build_r5_location_thresholds(tickers)
+    thresholds = build_r5_location_thresholds(tickers, as_of=as_of)
 
     return [
         build_weekly_clinical_context(
             ticker,
             thresholds=thresholds,
+            as_of=as_of,
         )
         for ticker in tickers
     ]
