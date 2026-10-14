@@ -23,6 +23,12 @@ ALLOWED = {
     "Resonance": {"◎齊", "○同", "△轉", "△錯", "×衝"},
 }
 
+# Narrow, verified exchange-calendar exception. Keep the Friday WEEK label;
+# its final actual session was Thursday because Friday was a market holiday.
+# TWSE 2026 market holidays: https://www.twse.com.tw/zh/trading/holiday.html
+# Unknown closures are still blocked for review rather than inferred from gaps.
+VERIFIED_WEEK_FINAL_SESSION = {date(2026, 10, 9): date(2026, 10, 8)}
+
 
 def candidate() -> dict:
     today = datetime.now(ZoneInfo("Asia/Taipei")).date()
@@ -41,7 +47,8 @@ def candidate() -> dict:
     expected_week = (pd.Timestamp(today).to_period("W-FRI").start_time - pd.Timedelta(days=1)).date()
     if weekly_asof != expected_week:
         raise ValueError(f"Need completed week {expected_week}; found {weekly_asof}")
-    if any(d < weekly_asof or d >= today or (today - d).days > 7 for d in daily_dates):
+    final_session = VERIFIED_WEEK_FINAL_SESSION.get(weekly_asof, weekly_asof)
+    if any(d < final_session or d >= today or (today - d).days > 7 for d in daily_dates):
         raise ValueError(f"Daily source dates need review: {daily_dates}")
 
     rows = []
